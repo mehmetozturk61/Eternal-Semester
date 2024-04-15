@@ -1,11 +1,12 @@
 package com.veyrongaming.eternalsemester.weapons;
 
-import com.veyrongaming.eternalsemester.Player;
+import com.veyrongaming.eternalsemester.GameWorld;
+import com.veyrongaming.eternalsemester.characters.Character;
 
 public abstract class Weapon {
-	private String name;
-	private float cooldown; // Time between attacks
-	private float damage; // Base damage dealt
+	protected String name;
+	protected float cooldown; // Time between attacks
+	protected float damage; // Base damage dealt
 	
 	public Weapon(String name, float cooldown, float damage) {
 		this.name = name;
@@ -13,7 +14,7 @@ public abstract class Weapon {
 		this.damage = damage;
 	}
 	
-	public abstract void attack(Player player, float delta); // Abstract method for specific attack behavior
+	public abstract void attack(Character character, GameWorld gameWorld); // Abstract method for specific attack behavior
 	
 	public boolean isReady(float elapsedTime) {
 		return elapsedTime >= cooldown;

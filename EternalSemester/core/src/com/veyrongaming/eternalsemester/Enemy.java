@@ -34,4 +34,12 @@ public class Enemy {
 	public boolean isDead() {
 		return health <= 0;
 	}
+
+	public void takeDamage(float damage) {
+		health -= damage;
+	}
+
+	public Vector2 getPosition() {
+		return position;
+	}
 }

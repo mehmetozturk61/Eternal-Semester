@@ -1,8 +1,10 @@
 package com.veyrongaming.eternalsemester.characters;
 
+import com.veyrongaming.eternalsemester.EternalSemester;
+
 public class Tank extends Character {
-    public Tank(String name) {
-        super(name, 300, 0.05f, new BattleAxe());
+    public Tank(EternalSemester game, String name) {
+        super(game, name, 300, 0.05f, new BattleAxe());
     }
 
     @Override

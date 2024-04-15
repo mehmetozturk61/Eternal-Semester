@@ -1,8 +1,10 @@
 package com.veyrongaming.eternalsemester.characters;
 
+import com.veyrongaming.eternalsemester.EternalSemester;
+
 public class Wizard extends Character {
-    public Wizard(String name) {
-        super(name, 100, 0.07f, new MagicalStaff());
+    public Wizard(EternalSemester game, String name) {
+        super(game, name, 100, 0.07f, new MagicalStaff());
     }
 
     @Override

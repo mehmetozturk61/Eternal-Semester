@@ -1,8 +1,10 @@
 package com.veyrongaming.eternalsemester.characters;
 
+import com.veyrongaming.eternalsemester.EternalSemester;
+
 public class Warrior extends Character {
-    public Warrior(String name) {
-        super(name, 200, 0.08f, new Sword());
+    public Warrior(EternalSemester game, String name) {
+        super(game, name, 200, 0.08f, new Sword());
     }
 
     @Override
