@@ -1,5 +1,7 @@
 package com.veyrongaming.eternalsemester.characters;
 
+import java.util.Vector;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -14,6 +16,7 @@ public abstract class Character {
     private final EternalSemester game;
     private Texture texture;
     private Vector2 position;
+	protected Vector2 direction;
     protected String name; // Character name
     protected int health; // Maximum health points
     protected float movementSpeed; // Movement speed
@@ -25,6 +28,7 @@ public abstract class Character {
         this.health = health;
         this.movementSpeed = movementSpeed;
         this.startingWeapon = startingWeapon;
+		this.direction = new Vector2(0, 0);
 
         texture = new Texture(Gdx.files.internal("character.png"));
         setPosition(new Vector2(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_HEIGHT / 2f));
@@ -42,41 +46,40 @@ public abstract class Character {
     }
 
     public void update(float delta) {
-		// Handle WASD key input
-		float xInput = 0;
-		float yInput = 0;
+		direction.x = 0;
+		direction.y = 0;
 		
 		if (Gdx.input.isKeyPressed(Keys.W)) {
-			yInput = 1;
+			direction.y = 1;
 		} else if (Gdx.input.isKeyPressed(Keys.S)) {
-			yInput = -1;
+			direction.y = -1;
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.D)) {
-			xInput = 1;
+			direction.x = 1;
 		} else if (Gdx.input.isKeyPressed(Keys.A)) {
-			xInput = -1;
+			direction.x = -1;
 		}
 		
 		// Handle mouse click input
 		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
 			Vector2 clickPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 			// Calculate direction vector from player to click position
-			Vector2 direction = clickPosition.sub(getPosition());
-			direction.nor(); // Normalize to get unit vector
-			xInput = direction.x;
-			yInput = direction.y;
+			Vector2 clickDirection = clickPosition.sub(getPosition());
+			clickDirection.nor(); // Normalize to get unit vector
+			direction.x = clickDirection.x;
+			direction.y = clickDirection.y;
 		}
 		
 		// Combine input for diagonal movement
-		float movementVectorLength = (float) Math.sqrt(xInput * xInput + yInput * yInput);
+		float movementVectorLength = (float) Math.sqrt(direction.x * direction.x + direction.y * direction.y);
 		if (movementVectorLength > 0) {
-			xInput /= movementVectorLength;
-			yInput /= movementVectorLength;
+			direction.x /= movementVectorLength;
+			direction.y /= movementVectorLength;
 		}
 		
 		// Update player position based on input and speed
-		getPosition().add(xInput * movementSpeed * delta, yInput * movementSpeed * delta);
+		position.add(direction.x * movementSpeed * delta, direction.y * movementSpeed * delta);
 		
 		// Clamp player position within level bounds
 
@@ -95,6 +98,10 @@ public abstract class Character {
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
+	}
+
+	public Vector2 getDirection() {
+		return direction;
 	}
 
     public int getHealth() {

@@ -13,7 +13,7 @@ import com.veyrongaming.eternalsemester.level.LevelManager;
 public class EternalSemester extends Game {
 	public SpriteBatch batch;
 	public OrthographicCamera camera;
-	public World world; 
+	public GameWorld world; 
 	public Player player;
 	public LevelManager levelManager;
 	
@@ -24,7 +24,7 @@ public class EternalSemester extends Game {
 		camera.setToOrtho(false, Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
 		
 		// Initialize world
-		world = new World(new Vector2(0, 0), true);
+		world = new GameWorld();
 		
 		// Initialize Player and Level Manager
 		player = new Player(this);
