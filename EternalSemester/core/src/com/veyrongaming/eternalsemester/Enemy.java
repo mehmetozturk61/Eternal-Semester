@@ -63,4 +63,8 @@ public class Enemy {
 	public Rectangle getHitBox() {
 		return new Rectangle(position.x - texture.getWidth() / 2, position.y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
 	}
+
+	public Texture getTexture() {
+		return texture;
+	}
 }

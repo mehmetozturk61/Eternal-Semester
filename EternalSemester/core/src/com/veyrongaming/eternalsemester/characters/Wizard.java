@@ -1,6 +1,7 @@
 package com.veyrongaming.eternalsemester.characters;
 
 import com.veyrongaming.eternalsemester.EternalSemester;
+import com.veyrongaming.eternalsemester.weapons.MagicalStaff;
 
 public class Wizard extends Character {
     public Wizard(EternalSemester game, String name) {

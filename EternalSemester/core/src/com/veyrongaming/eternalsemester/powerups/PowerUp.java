@@ -1,6 +1,6 @@
 package com.veyrongaming.eternalsemester.powerups;
 
-import com.veyrongaming.eternalsemester.Player;
+import com.veyrongaming.eternalsemester.characters.Character;
 
 public abstract class PowerUp {
 	private String name;
@@ -11,7 +11,7 @@ public abstract class PowerUp {
 		this.description = description;
 	}
 	
-	public abstract void applyEffect(Player player);
+	public abstract void applyEffect(Character character);
 	
 	public String getName() {
 		return name;

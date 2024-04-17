@@ -1,12 +1,11 @@
 package com.veyrongaming.eternalsemester.characters;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.veyrongaming.eternalsemester.Constants;
 import com.veyrongaming.eternalsemester.EternalSemester;
@@ -20,7 +19,8 @@ public abstract class Character {
     protected String name; // Character name
     protected int health; // Maximum health points
     protected float movementSpeed; // Movement speed
-    protected Weapon startingWeapon; // Character's starting weapond
+    protected Weapon startingWeapon; // Character's starting weapon
+	protected ArrayList<Weapon> weapons;
 
     public Character(EternalSemester game, String name, int health, float movementSpeed, Weapon startingWeapon) {
         this.game = game;
@@ -30,7 +30,9 @@ public abstract class Character {
         this.startingWeapon = startingWeapon;
 		this.direction = new Vector2(0, 0);
 
-        texture = new Texture(Gdx.files.internal("character.png"));
+		weapons = new ArrayList<Weapon>();
+		weapons.add(startingWeapon);
+        texture = new Texture(Gdx.files.internal("assassin.jpg"));
         setPosition(new Vector2(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_HEIGHT / 2f));
         
     }
@@ -88,8 +90,12 @@ public abstract class Character {
 		// ...
 	}
 	
-	public void draw(SpriteBatch batch) {
-		batch.draw(texture, getPosition().x - texture.getWidth() / 2f, getPosition().y - texture.getHeight() / 2f);
+	public void addWeapon(Weapon weapon) {
+		weapons.add(weapon);
+	}
+
+	public ArrayList<Weapon> getWeapons() {
+		return weapons;
 	}
 
 	public Vector2 getPosition() {
@@ -115,4 +121,8 @@ public abstract class Character {
     public Weapon getStartingWeapon() {
         return startingWeapon;
     }
+
+	public Texture getTexture() {
+		return texture;
+	}
 }

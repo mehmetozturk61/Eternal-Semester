@@ -2,23 +2,26 @@ package com.veyrongaming.eternalsemester.weapons;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.veyrongaming.eternalsemester.Enemy;
-import com.veyrongaming.eternalsemester.GameWorld;
+import com.veyrongaming.eternalsemester.GameScreen;
 
 public class Projectile {
+    private Texture texture;
     private Vector2 position;
     private Vector2 velocity;
     private float damage;
     private float lifetime;
-    private GameWorld gameWorld;
+    private GameScreen gameScreen;
 
-    public Projectile(Vector2 position, Vector2 velocity, float damage, float lifetime, GameWorld gameWorld) {
+    public Projectile(Texture texture, Vector2 position, Vector2 velocity, float damage, float lifetime, GameScreen gameScreen) {
+        this.texture = texture;
         this.position = position;
         this.velocity = velocity;
         this.damage = damage;
         this.lifetime = lifetime;
-        this.gameWorld = gameWorld;
+        this.gameScreen = gameScreen;
     }
 
     public void update(float delta) {
@@ -28,20 +31,28 @@ public class Projectile {
         checkEnemyCollision();
 
         if (lifetime <= 0) {
-            gameWorld.removeProjectile(this);
+            gameScreen.removeProjectile(this);
         }
     }
 
     private void checkEnemyCollision() {
-        ArrayList<Enemy> enemies = gameWorld.getEnemies();
+        ArrayList<Enemy> enemies = gameScreen.getEnemies();
         
         for (Enemy enemy : enemies) {
             if (enemy.getHitBox().contains(position)) {
                 enemy.takeDamage(damage);
                 enemy.applySlow(0.5f, 1f);
-                gameWorld.removeProjectile(this);
+                gameScreen.removeProjectile(this);
                 break;
             }
         }
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 }

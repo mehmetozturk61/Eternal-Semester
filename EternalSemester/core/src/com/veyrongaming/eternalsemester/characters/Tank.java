@@ -1,6 +1,7 @@
 package com.veyrongaming.eternalsemester.characters;
 
 import com.veyrongaming.eternalsemester.EternalSemester;
+import com.veyrongaming.eternalsemester.weapons.BattleAxe;
 
 public class Tank extends Character {
     public Tank(EternalSemester game, String name) {

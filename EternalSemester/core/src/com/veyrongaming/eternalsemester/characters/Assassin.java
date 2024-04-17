@@ -1,6 +1,7 @@
 package com.veyrongaming.eternalsemester.characters;
 
 import com.veyrongaming.eternalsemester.EternalSemester;
+import com.veyrongaming.eternalsemester.weapons.Dagger;
 
 public class Assassin extends Character {
     public Assassin(EternalSemester game, String name) {
