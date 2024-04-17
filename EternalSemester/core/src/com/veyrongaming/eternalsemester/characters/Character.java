@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.veyrongaming.eternalsemester.Constants;
 import com.veyrongaming.eternalsemester.EternalSemester;
@@ -18,23 +19,22 @@ public abstract class Character {
 	protected Vector2 direction;
     protected String name; // Character name
     protected int health; // Maximum health points
-    protected float movementSpeed; // Movement speed
+    protected float speed; // Movement speed
     protected Weapon startingWeapon; // Character's starting weapon
 	protected ArrayList<Weapon> weapons;
 
-    public Character(EternalSemester game, String name, int health, float movementSpeed, Weapon startingWeapon) {
+    public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon) {
         this.game = game;
         this.name = name;
         this.health = health;
-        this.movementSpeed = movementSpeed;
+        this.speed = speed;
         this.startingWeapon = startingWeapon;
+		this.position = new Vector2(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_HEIGHT / 2f);
 		this.direction = new Vector2(0, 0);
 
 		weapons = new ArrayList<Weapon>();
 		weapons.add(startingWeapon);
-        texture = new Texture(Gdx.files.internal("assassin.jpg"));
-        setPosition(new Vector2(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_HEIGHT / 2f));
-        
+        texture = new Texture(Gdx.files.internal("assassin.jpg"));        
     }
 
     public abstract void useSpecialAbility(); // Abstract method for character-specific ability
@@ -72,22 +72,13 @@ public abstract class Character {
 			direction.x = clickDirection.x;
 			direction.y = clickDirection.y;
 		}
-		
-		// Combine input for diagonal movement
-		float movementVectorLength = (float) Math.sqrt(direction.x * direction.x + direction.y * direction.y);
-		if (movementVectorLength > 0) {
-			direction.x /= movementVectorLength;
-			direction.y /= movementVectorLength;
-		}
-		
+				
 		// Update player position based on input and speed
-		position.add(direction.x * movementSpeed * delta, direction.y * movementSpeed * delta);
+		position.add(direction.x * speed * delta, direction.y * speed * delta);
 		
 		// Clamp player position within level bounds
-
-		
-		// Collision detection and response (if using box2D)
-		// ...
+		position.x = MathUtils.clamp(position.x, 0, Constants.VIEWPORT_WIDTH - getTexture().getWidth());
+  		position.y = MathUtils.clamp(position.y, 0, Constants.VIEWPORT_HEIGHT - getTexture().getHeight());
 	}
 	
 	public void addWeapon(Weapon weapon) {
@@ -99,11 +90,7 @@ public abstract class Character {
 	}
 
 	public Vector2 getPosition() {
-		return position;
-	}
-
-	public void setPosition(Vector2 position) {
-		this.position = position;
+		return new Vector2(position.x, position.y);
 	}
 
 	public Vector2 getDirection() {
@@ -114,8 +101,8 @@ public abstract class Character {
         return health;
     }
 
-    public float getMovementSpeed() {
-        return movementSpeed;
+    public float getSpeed() {
+        return speed;
     }
 
     public Weapon getStartingWeapon() {

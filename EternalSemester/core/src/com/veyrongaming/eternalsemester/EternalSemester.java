@@ -1,7 +1,6 @@
 package com.veyrongaming.eternalsemester;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EternalSemester extends Game {
@@ -18,7 +17,7 @@ public class EternalSemester extends Game {
 	public void render() {
 		super.render();
 		gameScreen.render(1f);
-		gameScreen.update(Gdx.graphics.getDeltaTime());
+		gameScreen.update(5f);
 	}
 	
 	@Override

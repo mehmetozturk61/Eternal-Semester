@@ -1,7 +1,6 @@
 package com.veyrongaming.eternalsemester;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.veyrongaming.eternalsemester.characters.Character;
@@ -36,10 +35,6 @@ public class Enemy {
 		
 		// Implement attack logic
 		// ...
-	}
-	
-	public void draw(SpriteBatch batch) {
-		batch.draw(texture, position.x - texture.getWidth() / 2f, position.y - texture.getHeight() / 2f);
 	}
 
 	public void applySlow(float slowFactor, float duration) {

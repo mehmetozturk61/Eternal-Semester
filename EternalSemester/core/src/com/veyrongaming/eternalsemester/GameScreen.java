@@ -51,9 +51,6 @@ public class GameScreen implements Screen {
 
         game.batch.begin();
 
-        camera.position.set(character.getPosition().x, character.getPosition().y, 0f);
-        camera.update();
-
         game.batch.draw(character.getTexture(), character.getPosition().x - character.getTexture().getWidth() / 2f, character.getPosition().y - character.getTexture().getHeight() / 2f);
         for (Enemy enemy : enemies) {
             game.batch.draw(enemy.getTexture(), enemy.getPosition().x - enemy.getTexture().getWidth() / 2f, enemy.getPosition().y - enemy.getTexture().getHeight() / 2f);
@@ -73,8 +70,14 @@ public class GameScreen implements Screen {
 
     public void update(float delta) {
         character.update(delta);
-        for (Enemy enemy : enemies) {
+        ArrayList<Enemy> enemiesCopy = new ArrayList<Enemy>(enemies);
+        for (Enemy enemy : enemiesCopy) {
             enemy.update(delta, character);
+
+            if(enemy.isDead()) {
+                enemies.remove(enemy);
+                enemy.getTexture().dispose();
+            }
         }
         for (Projectile projectile : projectiles) {
             projectile.update(delta);   
@@ -83,8 +86,6 @@ public class GameScreen implements Screen {
             weapon.update(delta, character, this);
         }
     }
-
-    
 
     public void addProjectile(Projectile projectile) {
         projectiles.add(projectile);
@@ -130,8 +131,16 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dispose'");
+        character.getTexture().dispose();
+        for (Enemy enemy : enemies) {
+            enemy.getTexture().dispose();
+        }
+        for (Projectile projectile : projectiles) {
+            projectile.getTexture().dispose();   
+        }
+        for (Weapon weapon : weapons) {
+            //weapon.getTexture().dispose();
+        }
     }
 
     public Character getCharacter() {

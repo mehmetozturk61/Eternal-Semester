@@ -9,12 +9,12 @@ import com.veyrongaming.eternalsemester.characters.Character;
 
 public class Dagger extends Weapon {
     public Dagger() {
-        super("Dagger", 2f, 20);
+        super("Dagger", 0.2f, 20);
     }
 
     @Override
     public void attack(Character character, GameScreen gameScreen) {
-        float attackRange = 1f;
+        float attackRange = 150f;
         ArrayList<Enemy> enemies = gameScreen.getEnemies();
 
         for (Enemy enemy : enemies) {
