@@ -13,28 +13,29 @@ import com.veyrongaming.eternalsemester.EternalSemester;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
 public abstract class Character {
-    private final EternalSemester game;
-    private Texture texture;
-    private Vector2 position;
-	protected Vector2 direction;
+    protected final EternalSemester game; // Reference to the main game class
+    protected Texture texture; // Character texture for rendering
+    protected Vector2 position; // Character's position in the game world
     protected String name; // Character name
     protected int health; // Maximum health points
     protected float speed; // Movement speed
     protected Weapon startingWeapon; // Character's starting weapon
+	protected Vector2 direction;
 	protected ArrayList<Weapon> weapons;
 
-    public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon) {
+    public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon, Texture texture) {
         this.game = game;
         this.name = name;
         this.health = health;
         this.speed = speed;
         this.startingWeapon = startingWeapon;
+		this.texture = texture;
+
 		this.position = new Vector2(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_HEIGHT / 2f);
 		this.direction = new Vector2(0, 0);
-
+		
 		weapons = new ArrayList<Weapon>();
 		weapons.add(startingWeapon);
-        texture = new Texture(Gdx.files.internal("assassin.jpg"));        
     }
 
     public abstract void useSpecialAbility(); // Abstract method for character-specific ability
@@ -64,8 +65,8 @@ public abstract class Character {
 		}
 		
 		// Handle mouse click input
-		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-			Vector2 clickPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			Vector2 clickPosition = new Vector2(Gdx.input.getX(), Constants.VIEWPORT_HEIGHT - Gdx.input.getY());
 			// Calculate direction vector from player to click position
 			Vector2 clickDirection = clickPosition.sub(getPosition());
 			clickDirection.nor(); // Normalize to get unit vector
@@ -89,10 +90,6 @@ public abstract class Character {
 		return weapons;
 	}
 
-	public Vector2 getPosition() {
-		return new Vector2(position.x, position.y);
-	}
-
 	public Vector2 getDirection() {
 		return direction;
 	}
@@ -111,5 +108,13 @@ public abstract class Character {
 
 	public Texture getTexture() {
 		return texture;
+	}
+
+	public Vector2 getPosition() {
+		return new Vector2(position.x, position.y);
+	}
+
+	public void setPosition(Vector2 position) {
+		this.position = position;
 	}
 }

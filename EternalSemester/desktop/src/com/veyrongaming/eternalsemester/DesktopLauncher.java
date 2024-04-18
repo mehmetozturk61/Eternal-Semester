@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("EternalSemester");
+		config.setWindowedMode(1600, 900);
 		new Lwjgl3Application(new EternalSemester(), config);
 	}
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -27,7 +28,7 @@ public class GameScreen implements Screen {
     public GameScreen(EternalSemester game) {
         this.game = game;
         camera = new OrthographicCamera();
-        character = new Assassin(game, null);
+        character = chooseCharacter();
         enemies = new ArrayList<Enemy>();
         projectiles = new ArrayList<Projectile>();
         weapons = character.getWeapons();
@@ -38,8 +39,16 @@ public class GameScreen implements Screen {
 
     private void spawnEnemy() {
         Texture texture = new Texture(Gdx.files.internal("enemy.png"));
-        float spawnX = (Constants.VIEWPORT_WIDTH  - texture.getWidth()) / 2f + (2 * MathUtils.random(0, 1) - 1) * MathUtils.random(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_WIDTH / 2f + Constants.ENEMY_SPAWN_BUFFER); 
-        float spawnY = (Constants.VIEWPORT_HEIGHT  - texture.getHeight()) / 2f + (2 * MathUtils.random(0, 1) - 1) * MathUtils.random(Constants.VIEWPORT_HEIGHT / 2f, Constants.VIEWPORT_HEIGHT / 2f + Constants.ENEMY_SPAWN_BUFFER); 
+        Rectangle screenArea = new Rectangle(0, 0, Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
+        float spawnX;
+        float spawnY;
+
+        do {
+            spawnX = MathUtils.random(-Constants.ENEMY_SPAWN_BUFFER - texture.getWidth(), Constants.VIEWPORT_WIDTH + Constants.ENEMY_SPAWN_BUFFER);
+            spawnY = MathUtils.random(-Constants.ENEMY_SPAWN_BUFFER - texture.getHeight(), Constants.VIEWPORT_HEIGHT + Constants.ENEMY_SPAWN_BUFFER);
+        }
+        while (screenArea.contains(spawnX, spawnY));
+
         Vector2 position = new Vector2(spawnX, spawnY);
         enemies.add(new Enemy(texture, position, 0.05f, 20));
         lastEnemySpawnTime = TimeUtils.nanoTime();
@@ -85,6 +94,11 @@ public class GameScreen implements Screen {
         for (Weapon weapon : weapons) {
             weapon.update(delta, character, this);
         }
+    }
+
+    private Character chooseCharacter() {
+        return new Assassin(game, null);
+        // TODO
     }
 
     public void addProjectile(Projectile projectile) {

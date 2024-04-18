@@ -1,11 +1,13 @@
 package com.veyrongaming.eternalsemester.characters;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.veyrongaming.eternalsemester.EternalSemester;
 import com.veyrongaming.eternalsemester.weapons.BattleAxe;
 
 public class Tank extends Character {
     public Tank(EternalSemester game, String name) {
-        super(game, name, 300, 0.05f, new BattleAxe());
+        super(game, name, 300, 0.05f, new BattleAxe(), new Texture(Gdx.files.internal("assassin.jpg")));
     }
 
     @Override
