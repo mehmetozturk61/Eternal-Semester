@@ -22,6 +22,7 @@ public abstract class Character {
     protected Weapon startingWeapon; // Character's starting weapon
 	protected Vector2 direction;
 	protected ArrayList<Weapon> weapons;
+	private int xp = 0;
 
     public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon, Texture texture) {
         this.game = game;
@@ -80,6 +81,11 @@ public abstract class Character {
 		// Clamp player position within level bounds
 		position.x = MathUtils.clamp(position.x, 0, Constants.VIEWPORT_WIDTH - getTexture().getWidth());
   		position.y = MathUtils.clamp(position.y, 0, Constants.VIEWPORT_HEIGHT - getTexture().getHeight());
+
+		// Special ability usage
+		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+			useSpecialAbility();
+		}
 	}
 	
 	public void addWeapon(Weapon weapon) {
