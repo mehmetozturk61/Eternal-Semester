@@ -26,7 +26,7 @@ import com.veyrongaming.eternalsemester.weapons.Projectile;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
 public class GameScreen implements Screen {
-    private EternalSemester game;
+    public EternalSemester game;
     private OrthographicCamera camera;
     private Character character;
     private ArrayList<Enemy> enemies;
@@ -50,10 +50,6 @@ public class GameScreen implements Screen {
         spawnEnemy();
     }
 
-    public void create() {
-        
-    }
-
     private void spawnEnemy() {
         Texture texture = new Texture(Gdx.files.internal("enemy.png"));
         Rectangle screenArea = new Rectangle(0, 0, Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
@@ -73,7 +69,7 @@ public class GameScreen implements Screen {
 
     public void render(float delta) {
         // Clear the screen
-        ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1f);
+        ScreenUtils.clear(0.2f, 0.5f, 0.3f, 1f);
 
         game.batch.begin();
         

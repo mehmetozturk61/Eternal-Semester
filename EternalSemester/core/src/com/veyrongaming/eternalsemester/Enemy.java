@@ -34,7 +34,7 @@ public class Enemy {
 		Vector2 direction = character.getPosition().sub(position);
 		direction.nor(); // Normalize to get unit vector
 
-		body.setLinearVelocity(new Vector2(1000 * direction.x * speed * delta, 1000 * direction.y * speed * delta));
+		body.setLinearVelocity(new Vector2(500 * direction.x * speed * delta, 500 * direction.y * speed * delta));
 		position = body.getPosition();		
 
 		if (slowTimer > 0) {

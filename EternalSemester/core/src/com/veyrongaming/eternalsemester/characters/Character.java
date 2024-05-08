@@ -62,7 +62,7 @@ public abstract class Character {
     public void update(float delta) {
 		statetime += delta;
 
-		direction.x = 0;
+		direction.x = (isFacingRight ? 1 : -1) * 0.001f;
 		direction.y = 0;
 		
 		if (Gdx.input.isKeyPressed(Keys.W)) {
@@ -87,6 +87,10 @@ public abstract class Character {
 			clickDirection.nor(); // Normalize to get unit vector
 			direction.x = clickDirection.x;
 			direction.y = clickDirection.y;
+			
+			if (direction.x >= 0)
+				isFacingRight = true;
+			else isFacingRight = false;
 		}
 				
 		// Update player position based on input and speedss
@@ -108,7 +112,7 @@ public abstract class Character {
 		body.setFixedRotation(true);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(3 * 30 / 2, 3 * 26 / 2);
+        shape.setAsBox(3 * 24 / 2, 3 * 24 / 2);
         body.createFixture(shape, 10.0f);
         shape.dispose();
 
@@ -124,7 +128,7 @@ public abstract class Character {
 	}
 
 	public Vector2 getDirection() {
-		return direction;
+		return new Vector2(direction.x, direction.y);
 	}
 
     public int getHealth() {
@@ -145,5 +149,9 @@ public abstract class Character {
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
+	}
+
+	public void dispose() {
+		world.destroyBody(body);
 	}
 }

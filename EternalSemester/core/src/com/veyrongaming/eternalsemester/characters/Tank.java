@@ -38,7 +38,7 @@ public class Tank extends Character {
 
     @Override
     public void draw() {
-        boolean isIdle = (startingWeapon.getCoolddownTimeLeft() > 50f);
+        boolean isIdle = (startingWeapon.getCooldownTimeLeft() > 50f);
 
         if (isIdle && isFacingRight) {
             game.batch.draw((TextureRegion) animations[0].getKeyFrame(statetime, true), getPosition().x - 3*TANK_WIDTH/2, getPosition().y - 3*TANK_HEIGHT/2, 3*TANK_WIDTH, 3*TANK_HEIGHT);
@@ -53,9 +53,7 @@ public class Tank extends Character {
             game.batch.draw((TextureRegion) animations[1].getKeyFrame(statetime, false), getPosition().x + 3*TANK_WIDTH/2, getPosition().y - 3*TANK_HEIGHT/2, - 3*TANK_WIDTH, 3*TANK_HEIGHT);
         }
 
-        if (!isIdle) {
-            startingWeapon.draw(game, this, statetime);
-        }
+        startingWeapon.draw(game, this);
     }
 
     @Override
