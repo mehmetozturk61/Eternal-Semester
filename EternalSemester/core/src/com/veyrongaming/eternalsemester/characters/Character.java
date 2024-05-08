@@ -5,41 +5,51 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.Constants;
 import com.veyrongaming.eternalsemester.EternalSemester;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
 public abstract class Character {
     protected final EternalSemester game; // Reference to the main game class
-    protected Texture texture; // Character texture for rendering
     protected Vector2 position; // Character's position in the game world
     protected String name; // Character name
     protected int health; // Maximum health points
     protected float speed; // Movement speed
-    protected Weapon startingWeapon; // Character's starting weapon
+    public Weapon startingWeapon; // Character's starting weapon
 	protected Vector2 direction;
 	protected ArrayList<Weapon> weapons;
-	private int xp = 0;
+	public Animation<TextureRegion> animations[];
+	public boolean isFacingRight = true;
+	public float statetime;
+	public Body body;
+	public World world;
 
-    public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon, Texture texture) {
+    public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon, World world) {
         this.game = game;
         this.name = name;
         this.health = health;
         this.speed = speed;
         this.startingWeapon = startingWeapon;
-		this.texture = texture;
+		this.world = world;
 
 		this.position = new Vector2(Constants.VIEWPORT_WIDTH / 2f, Constants.VIEWPORT_HEIGHT / 2f);
-		this.direction = new Vector2(0, 0);
+		this.direction = new Vector2();
+		this.body = createBody();
 		
 		weapons = new ArrayList<Weapon>();
 		weapons.add(startingWeapon);
     }
 
     public abstract void useSpecialAbility(); // Abstract method for character-specific ability
+	public abstract void draw();
 
     public void takeDamage(int damage) {
         health -= damage;
@@ -50,6 +60,8 @@ public abstract class Character {
     }
 
     public void update(float delta) {
+		statetime += delta;
+
 		direction.x = 0;
 		direction.y = 0;
 		
@@ -61,8 +73,10 @@ public abstract class Character {
 		
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			direction.x = 1;
+			isFacingRight = true;
 		} else if (Gdx.input.isKeyPressed(Keys.A)) {
 			direction.x = -1;
+			isFacingRight = false;
 		}
 		
 		// Handle mouse click input
@@ -75,18 +89,31 @@ public abstract class Character {
 			direction.y = clickDirection.y;
 		}
 				
-		// Update player position based on input and speed
-		position.add(direction.x * speed * delta, direction.y * speed * delta);
-		
-		// Clamp player position within level bounds
-		position.x = MathUtils.clamp(position.x, 0, Constants.VIEWPORT_WIDTH - getTexture().getWidth());
-  		position.y = MathUtils.clamp(position.y, 0, Constants.VIEWPORT_HEIGHT - getTexture().getHeight());
+		// Update player position based on input and speedss
+		body.setLinearVelocity(new Vector2(1000 * direction.x * speed * delta, 1000 * direction.y * speed * delta));
+		position = body.getPosition();
 
 		// Special ability usage
 		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
 			useSpecialAbility();
 		}
 	}
+
+	public Body createBody() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.DynamicBody;
+        bodyDef.position.set(getPosition().x + 10, getPosition().y);
+
+        Body body = world.createBody(bodyDef);
+		body.setFixedRotation(true);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(3 * 30 / 2, 3 * 26 / 2);
+        body.createFixture(shape, 10.0f);
+        shape.dispose();
+
+        return body;
+    }
 	
 	public void addWeapon(Weapon weapon) {
 		weapons.add(weapon);
@@ -111,10 +138,6 @@ public abstract class Character {
     public Weapon getStartingWeapon() {
         return startingWeapon;
     }
-
-	public Texture getTexture() {
-		return texture;
-	}
 
 	public Vector2 getPosition() {
 		return new Vector2(position.x, position.y);

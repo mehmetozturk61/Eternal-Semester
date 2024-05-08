@@ -1,13 +1,18 @@
 package com.veyrongaming.eternalsemester.characters;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.EternalSemester;
 import com.veyrongaming.eternalsemester.weapons.MagicalStaff;
 
 public class Wizard extends Character {
-    public Wizard(EternalSemester game, String name) {
-        super(game, name, 100, 0.07f, new MagicalStaff(), new Texture(Gdx.files.internal("assassin.jpg")));
+    public Wizard(EternalSemester game, String name, World world) {
+        super(game, name, 100, 0.07f, new MagicalStaff(), world);
+    }
+
+    @Override
+    public void draw() {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override

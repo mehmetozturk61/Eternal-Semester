@@ -1,13 +1,18 @@
 package com.veyrongaming.eternalsemester.characters;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.EternalSemester;
 import com.veyrongaming.eternalsemester.weapons.Sword;
 
 public class Warrior extends Character {
-    public Warrior(EternalSemester game, String name) {
-        super(game, name, 200, 0.08f, new Sword(), new Texture(Gdx.files.internal("assassin.jpg")));
+    public Warrior(EternalSemester game, String name, World world) {
+        super(game, name, 200, 0.08f, new Sword(), world);
+    }
+
+    @Override
+    public void draw() {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override

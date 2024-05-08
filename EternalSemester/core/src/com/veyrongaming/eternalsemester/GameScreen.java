@@ -6,13 +6,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.veyrongaming.eternalsemester.characters.Assassin;
 import com.veyrongaming.eternalsemester.characters.Character;
+import com.veyrongaming.eternalsemester.characters.Tank;
 import com.veyrongaming.eternalsemester.weapons.Projectile;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
@@ -24,17 +33,25 @@ public class GameScreen implements Screen {
     private ArrayList<Projectile> projectiles;
     private ArrayList<Weapon> weapons;
     private long lastEnemySpawnTime;
+    public World world;
+    private Box2DDebugRenderer b2dr;
 
     public GameScreen(EternalSemester game) {
         this.game = game;
         camera = new OrthographicCamera();
-        character = chooseCharacter();
         enemies = new ArrayList<Enemy>();
         projectiles = new ArrayList<Projectile>();
+        world = new World(new Vector2(0, 0), false);
+        character = new Tank(game, null, world);
         weapons = character.getWeapons();
+        b2dr = new Box2DDebugRenderer();
 
         camera.setToOrtho(false, Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
         spawnEnemy();
+    }
+
+    public void create() {
+        
     }
 
     private void spawnEnemy() {
@@ -50,7 +67,7 @@ public class GameScreen implements Screen {
         while (screenArea.contains(spawnX, spawnY));
 
         Vector2 position = new Vector2(spawnX, spawnY);
-        enemies.add(new Enemy(texture, position, 0.05f, 20));
+        enemies.add(new Enemy(texture, position, 0.1f, 20, world));
         lastEnemySpawnTime = TimeUtils.nanoTime();
     }
 
@@ -59,10 +76,11 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1f);
 
         game.batch.begin();
-
-        game.batch.draw(character.getTexture(), character.getPosition().x - character.getTexture().getWidth() / 2f, character.getPosition().y - character.getTexture().getHeight() / 2f);
+        
+        character.draw();
+        
         for (Enemy enemy : enemies) {
-            game.batch.draw(enemy.getTexture(), enemy.getPosition().x - enemy.getTexture().getWidth() / 2f, enemy.getPosition().y - enemy.getTexture().getHeight() / 2f);
+            game.batch.draw(enemy.getTexture(), enemy.getPosition().x - enemy.getTexture().getWidth() / 10f, enemy.getPosition().y - enemy.getTexture().getHeight() / 10f, enemy.getTexture().getWidth() / 5, enemy.getTexture().getWidth() / 5);
         }
         for (Projectile projectile : projectiles) {
             game.batch.draw(projectile.getTexture(), projectile.getPosition().x - projectile.getTexture().getWidth() / 2f, projectile.getPosition().y - projectile.getTexture().getHeight() / 2f);
@@ -75,6 +93,9 @@ public class GameScreen implements Screen {
         if (TimeUtils.nanoTime() - lastEnemySpawnTime > 1000000000) {
             spawnEnemy();
         }
+
+        world.step(1/144f, 6, 2);
+        b2dr.render(world, camera.combined);
     }
 
     public void update(float delta) {
@@ -85,7 +106,7 @@ public class GameScreen implements Screen {
 
             if(enemy.isDead()) {
                 enemies.remove(enemy);
-                enemy.getTexture().dispose();
+                enemy.dispose();
             }
         }
         for (Projectile projectile : projectiles) {
@@ -97,7 +118,7 @@ public class GameScreen implements Screen {
     }
 
     private Character chooseCharacter() {
-        return new Assassin(game, null);
+        return new Assassin(game, null, world);
         // TODO
     }
 
@@ -115,37 +136,33 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'show'");
+
     }
 
     @Override
     public void resize(int width, int height) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resize'");
+
     }
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pause'");
+
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resume'");
+
     }
 
     @Override
     public void hide() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hide'");
+
     }
 
     @Override
     public void dispose() {
-        character.getTexture().dispose();
+        b2dr.dispose();
+        //character.dispose();
         for (Enemy enemy : enemies) {
             enemy.getTexture().dispose();
         }
