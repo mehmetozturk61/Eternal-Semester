@@ -21,7 +21,7 @@ public abstract class Character {
     protected final EternalSemester game; // Reference to the main game class
     protected Vector2 position; // Character's position in the game world
     protected String name; // Character name
-    protected int health; // Maximum health points
+    protected float health; // Maximum health points
     protected float speed; // Movement speed
     public Weapon startingWeapon; // Character's starting weapon
 	protected Vector2 direction;
@@ -31,6 +31,10 @@ public abstract class Character {
 	public float statetime;
 	public Body body;
 	public World world;
+	protected float lastHit = 50;
+	protected float deadtime = 0;
+	protected float specialAbilityCooldown;
+	protected float specialAbilityTimer = 0;
 
     public Character(EternalSemester game, String name, int health, float speed, Weapon startingWeapon, World world) {
         this.game = game;
@@ -51,18 +55,15 @@ public abstract class Character {
     public abstract void useSpecialAbility(); // Abstract method for character-specific ability
 	public abstract void draw();
 
-    public void takeDamage(int damage) {
-        health -= damage;
-
-        if (health <= 0) {
-            // TODO Handle character death (play animation, remove from game world)
-        }
-    }
-
     public void update(float delta) {
 		statetime += delta;
+		lastHit += delta;
+		specialAbilityTimer -= delta;
+		if (isDead()) {
+			deadtime += delta;
+		}
 
-		direction.x = (isFacingRight ? 1 : -1) * 0.001f;
+		direction.x = (isFacingRight ? 1 : -1) * 0.000001f;
 		direction.y = 0;
 		
 		if (Gdx.input.isKeyPressed(Keys.W)) {
@@ -93,12 +94,12 @@ public abstract class Character {
 			else isFacingRight = false;
 		}
 				
-		// Update player position based on input and speedss
-		body.setLinearVelocity(new Vector2(1000 * direction.x * speed * delta, 1000 * direction.y * speed * delta));
+		// Update player position based on input and speeds
+		body.setLinearVelocity(new Vector2(direction.x * speed * delta / 12, direction.y * speed * delta / 12));
 		position = body.getPosition();
 
 		// Special ability usage
-		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			useSpecialAbility();
 		}
 	}
@@ -113,11 +114,16 @@ public abstract class Character {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(3 * 24 / 2, 3 * 24 / 2);
-        body.createFixture(shape, 10.0f);
+        body.createFixture(shape, 10.0f).setUserData(this);
         shape.dispose();
 
         return body;
     }
+
+	public void takeDamage(float damage) {
+		health -= damage;
+		lastHit = 0;
+	}
 	
 	public void addWeapon(Weapon weapon) {
 		weapons.add(weapon);
@@ -131,9 +137,13 @@ public abstract class Character {
 		return new Vector2(direction.x, direction.y);
 	}
 
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
+	
+	public boolean isDead() {
+		return health <= 0;
+	}
 
     public float getSpeed() {
         return speed;

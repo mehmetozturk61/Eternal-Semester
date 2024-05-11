@@ -1,7 +1,6 @@
 package com.veyrongaming.eternalsemester;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,16 +12,22 @@ import com.veyrongaming.eternalsemester.characters.Character;
 public class Enemy {
 	private Texture texture;
 	private Vector2 position;
+	private float attack;
 	private float speed;
 	private float health;
 	private float slowFactor;
 	private float slowTimer;
 	private World world;
 	private Body body;
+	private float attackCooldown = 250;
+	private float attackTimer = 0;
+	private boolean canAttack = false; // Whether the enemy can attack the player or not (range)
+	private Character character;
 	
-	public Enemy(Texture texture, Vector2 spawnPosition, float speed, float health, World world) {
+	public Enemy(Texture texture, Vector2 spawnPosition, float attack, float speed, float health, World world) {
 		this.texture = texture;
 		this.position = spawnPosition;
+		this.attack = attack;
 		this.speed = speed;
 		this.health = health;
 		this.world = world;
@@ -34,18 +39,23 @@ public class Enemy {
 		Vector2 direction = character.getPosition().sub(position);
 		direction.nor(); // Normalize to get unit vector
 
-		body.setLinearVelocity(new Vector2(500 * direction.x * speed * delta, 500 * direction.y * speed * delta));
-		position = body.getPosition();		
+		body.setLinearVelocity(new Vector2(300 * direction.x * speed * delta, 300 * direction.y * speed * delta));
+		position = body.getPosition();
 
-		if (slowTimer > 0) {
-			slowTimer -= delta;
-			if (slowTimer <= 0) {
-				speed /= slowFactor;
-			}
+		if (attackTimer > 0) {
+			attackTimer -= delta;
 		}
-		
-		// Implement attack logic
-		// ...
+
+		if (canAttack) {
+			attack(character);
+		}
+	}
+
+	public void attack(Character character) {
+		if (attackTimer <= 0) {
+			character.takeDamage(attack);
+			attackTimer = attackCooldown;
+		}
 	}
 
 	private Body createBody() {
@@ -58,7 +68,7 @@ public class Enemy {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(texture.getWidth()/10f, texture.getHeight()/10f);
-        body.createFixture(shape, 1.0f);
+        body.createFixture(shape, 1.0f).setUserData(this);
         shape.dispose();
 
         return body;
@@ -82,12 +92,13 @@ public class Enemy {
 		return new Vector2(position.x, position.y);
 	}
 
-	public Rectangle getHitBox() {
-		return new Rectangle(position.x - texture.getWidth() / 2, position.y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
-	}
-
 	public Texture getTexture() {
 		return texture;
+	}
+
+	public void setCanAttack(boolean canAttack, Character character) {
+		this.canAttack = canAttack;
+		this.character = character;
 	}
 	
 	public void dispose() {

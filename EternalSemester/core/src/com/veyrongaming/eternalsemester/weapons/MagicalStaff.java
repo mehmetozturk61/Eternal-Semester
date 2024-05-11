@@ -12,12 +12,6 @@ public class MagicalStaff extends Weapon {
 
     @Override
     public void attack(Character character, GameScreen gameScreen) {
-        float projectileSpeed = 5f;
-        float projectileLifetime = 2f;
 
-        Vector2 projectilePosition = character.getPosition().add(character.getDirection().scl(0.5f));
-        Projectile projectile = new Projectile(new Texture(""), projectilePosition, character.getDirection().scl(projectileSpeed), damage, projectileLifetime, gameScreen);
-
-        gameScreen.addProjectile(projectile);
     }
 }
