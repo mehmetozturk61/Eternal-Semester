@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
         while (screenArea.contains(spawnX, spawnY));
 
         Vector2 position = new Vector2(spawnX, spawnY);
-        enemies.add(new Enemy(texture, position, 15, 0.1f, 20, world));
+        enemies.add(new Enemy(texture, position, 15, 10000f, 20, world));
         lastEnemySpawnTime = TimeUtils.nanoTime();
     }
 

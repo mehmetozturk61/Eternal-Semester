@@ -19,8 +19,8 @@ public class EternalSemester extends Game {
 	@Override
 	public void render() {
 		super.render();
-		gameScreen.render(1f);
-		gameScreen.update(5f);
+		gameScreen.render(1/144f);
+		gameScreen.update(1/144f);
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ public class Enemy {
 	private float slowTimer;
 	private World world;
 	private Body body;
-	private float attackCooldown = 250;
+	private float attackCooldown = 3f;
 	private float attackTimer = 0;
 	private boolean canAttack = false; // Whether the enemy can attack the player or not (range)
 	private Character character;
@@ -39,7 +39,7 @@ public class Enemy {
 		Vector2 direction = character.getPosition().sub(position);
 		direction.nor(); // Normalize to get unit vector
 
-		body.setLinearVelocity(new Vector2(300 * direction.x * speed * delta, 300 * direction.y * speed * delta));
+		body.setLinearVelocity(new Vector2(direction.x * speed * delta, direction.y * speed * delta));
 		position = body.getPosition();
 
 		if (attackTimer > 0) {

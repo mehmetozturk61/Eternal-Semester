@@ -24,11 +24,8 @@ public abstract class Weapon {
         cooldownTimeLeft -= delta;
 		statetime += delta;
 
-		if (cooldownTimeLeft == 50) {
-			direction = character.getDirection();
-		}
-
         if (cooldownTimeLeft <= 0) {
+			direction = character.getDirection();
             attack(character, screen);
 			statetime = 0;
             cooldownTimeLeft = cooldown;

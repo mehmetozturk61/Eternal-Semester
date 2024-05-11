@@ -31,7 +31,7 @@ public abstract class Character {
 	public float statetime;
 	public Body body;
 	public World world;
-	protected float lastHit = 50;
+	protected float lastHit = 0.05f;
 	protected float deadtime = 0;
 	protected float specialAbilityCooldown;
 	protected float specialAbilityTimer = 0;
@@ -95,7 +95,7 @@ public abstract class Character {
 		}
 				
 		// Update player position based on input and speeds
-		body.setLinearVelocity(new Vector2(direction.x * speed * delta / 12, direction.y * speed * delta / 12));
+		body.setLinearVelocity(new Vector2(direction.x * speed * delta, direction.y * speed * delta));
 		position = body.getPosition();
 
 		// Special ability usage

@@ -17,7 +17,7 @@ public class BattleAxe extends Weapon {
     private TextureRegion attackAnimation[];
 
     public BattleAxe() {
-        super("Battle Axe", 750f, 30);
+        super("Battle Axe", 1f, 30);
 
         TextureRegion attackSheet[][] = TextureRegion.split(attack, 126, 39);
         attackAnimation = new TextureRegion[5];
@@ -26,7 +26,7 @@ public class BattleAxe extends Weapon {
             attackAnimation[i] = attackSheet[i][0];
         }
 
-        animation = new Animation<>(50f, attackAnimation);
+        animation = new Animation<>(0.05f, attackAnimation);
     }
 
     @Override

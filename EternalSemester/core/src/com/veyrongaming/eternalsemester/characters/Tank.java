@@ -11,7 +11,7 @@ public class Tank extends Character {
     public static final int TANK_WIDTH = 126;
     public static final int TANK_HEIGHT = 39;
     public static final int MAX_HEALTH = 300;
-    public static final float SPEED = 500f;
+    public static final float SPEED = 50000f;
 
     private float speedBonusTimer = 0;
 
@@ -23,7 +23,7 @@ public class Tank extends Character {
 
     public Tank(EternalSemester game, String name, World world) {
         super(game, name, MAX_HEALTH, SPEED, new BattleAxe(), world);
-        this.specialAbilityCooldown = 2000f;
+        this.specialAbilityCooldown = 2f;
         animations = new Animation[8];
         TextureRegion idleSheet[][] = TextureRegion.split(idle, TANK_WIDTH, TANK_HEIGHT);
         TextureRegion attackSheet[][] = TextureRegion.split(attack, TANK_WIDTH, TANK_HEIGHT);
@@ -46,10 +46,10 @@ public class Tank extends Character {
             deathAnimation[i] = deathSheet[i][0];
         }
 
-        animations[0] = new Animation<>(40f, idleAnimation);
-        animations[1] = new Animation<>(50f, attackAnimation);
-        animations[2] = new Animation<>(50f, hitAnimation);
-        animations[3] = new Animation<>(40f, deathAnimation);
+        animations[0] = new Animation<>(0.05f, idleAnimation);
+        animations[1] = new Animation<>(0.05f, attackAnimation);
+        animations[2] = new Animation<>(0.05f, hitAnimation);
+        animations[3] = new Animation<>(0.05f, deathAnimation);
     }
 
     @Override
@@ -67,8 +67,8 @@ public class Tank extends Character {
 
     @Override
     public void draw() {
-        boolean isIdle = (startingWeapon.getCooldownTimeLeft() > 50f);
-        boolean isHit = (lastHit < 25f);
+        boolean isIdle = (startingWeapon.getCooldownTimeLeft() > 0.05f);
+        boolean isHit = (lastHit < 0.1f);
 
         if (isDead() && isFacingRight) {
             game.batch.draw((TextureRegion) animations[3].getKeyFrame(deadtime, false), getPosition().x - 3*TANK_WIDTH/2, getPosition().y - 3*TANK_HEIGHT/2, 3*TANK_WIDTH, 3*TANK_HEIGHT);
@@ -103,7 +103,7 @@ public class Tank extends Character {
         System.out.println(health);
         if (specialAbilityTimer < 0) {
             heal(50);
-            speedBonusTimer = 200f;
+            speedBonusTimer = 1f;
             specialAbilityTimer = specialAbilityCooldown;
             System.out.println("Special ability used.");
             System.out.println(health);
