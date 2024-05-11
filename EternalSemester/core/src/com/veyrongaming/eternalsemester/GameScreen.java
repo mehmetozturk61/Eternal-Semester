@@ -33,7 +33,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         enemies = new ArrayList<Enemy>();
         world = new World(new Vector2(0, 0), false);
-        world.setContactListener(new GameContanctListener());
+        world.setContactListener(new GameContactListener());
         character = new Tank(game, null, world);
         weapons = character.getWeapons();
         b2dr = new Box2DDebugRenderer();

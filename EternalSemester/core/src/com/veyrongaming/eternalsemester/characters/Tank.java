@@ -48,7 +48,7 @@ public class Tank extends Character {
 
         animations[0] = new Animation<>(0.05f, idleAnimation);
         animations[1] = new Animation<>(0.05f, attackAnimation);
-        animations[2] = new Animation<>(0.05f, hitAnimation);
+        animations[2] = new Animation<>(0.01f, hitAnimation);
         animations[3] = new Animation<>(0.05f, deathAnimation);
     }
 

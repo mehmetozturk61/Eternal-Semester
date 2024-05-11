@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.veyrongaming.eternalsemester.characters.Character;
 
-public class GameContanctListener implements ContactListener {
+public class GameContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         Fixture fa = contact.getFixtureA();

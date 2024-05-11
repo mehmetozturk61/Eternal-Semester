@@ -19,7 +19,7 @@ public class Enemy {
 	private float slowTimer;
 	private World world;
 	private Body body;
-	private float attackCooldown = 3f;
+	private float attackCooldown = 0.2f;
 	private float attackTimer = 0;
 	private boolean canAttack = false; // Whether the enemy can attack the player or not (range)
 	private Character character;
