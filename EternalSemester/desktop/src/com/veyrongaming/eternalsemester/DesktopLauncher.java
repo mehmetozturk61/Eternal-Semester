@@ -2,7 +2,6 @@ package com.veyrongaming.eternalsemester;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.veyrongaming.eternalsemester.EternalSemester;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
@@ -10,7 +9,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("EternalSemester");
-		config.setWindowedMode(1600, 900);
+		config.setWindowedMode(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
 		new Lwjgl3Application(new EternalSemester(), config);
 	}
 }

@@ -5,54 +5,35 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.EternalSemester;
+import com.veyrongaming.eternalsemester.weapons.BattleAxe;
 
-public class Tank extends Player {
+public class Tank2 extends Character {
     public static final int TANK_WIDTH = 126;
     public static final int TANK_HEIGHT = 39;
-<<<<<<< Updated upstream
     public static final int MAX_HEALTH = 300;
-    public static final float SPEED = 500f;
-=======
->>>>>>> Stashed changes
+    public static final float SPEED = 50000f;
 
-    public static String name = "Tank";
-    public static int maxHealth = 300;
-    public static int speed = 100;
-    public static float specialCooldown = 4f;
+    private float speedBonusTimer = 0;
 
-    public float speedBonusTimer = 0;
 
-    public Texture idle = new Texture("Ball and Chain Bot/idle.png");
-    public Texture attack = new Texture("Ball and Chain Bot/idle attack.png");
-    public Texture hit = new Texture("Ball and Chain Bot/hit.png");
-    public Texture death = new Texture("Ball and Chain Bot/death.png");
-    public Texture run = new Texture("Ball and Chain Bot/run.png");
+    Texture idle = new Texture("Ball and Chain Bot/idle.png");
+    Texture attack = new Texture("Ball and Chain Bot/idle attack.png");
+    Texture hit = new Texture("Ball and Chain Bot/hit.png");
+    Texture death = new Texture("Ball and Chain Bot/death.png");
 
-<<<<<<< Updated upstream
-    public Tank(EternalSemester game, String name, World world) {
+    public Tank2(EternalSemester game, String name, World world) {
         super(game, name, MAX_HEALTH, SPEED, new BattleAxe(), world);
-        this.specialAbilityCooldown = 2000f;
-        animations = new Animation[8];
-=======
-    public Tank(EternalSemester game, World world) {
-        super(game, name, maxHealth, speed, specialCooldown, world);
         
-        createAnimation();
-    }
-
-    private void createAnimation() {
-        animations = new Animation[5];
->>>>>>> Stashed changes
+        this.specialAbilityCooldown = 2f;
+        animations = new Animation[8];
         TextureRegion idleSheet[][] = TextureRegion.split(idle, TANK_WIDTH, TANK_HEIGHT);
         TextureRegion attackSheet[][] = TextureRegion.split(attack, TANK_WIDTH, TANK_HEIGHT);
         TextureRegion hitSheet[][] = TextureRegion.split(hit, TANK_WIDTH, TANK_HEIGHT);
         TextureRegion deathSheet[][] = TextureRegion.split(death, TANK_WIDTH, TANK_HEIGHT);
-        TextureRegion runSheet[][] = TextureRegion.split(run, TANK_WIDTH, TANK_HEIGHT);
         TextureRegion idleAnimation[] = new TextureRegion[5];
         TextureRegion attackAnimation[] = new TextureRegion[4];
         TextureRegion hitAnimation = hitSheet[1][0];
         TextureRegion deathAnimation[] = new TextureRegion[5];
-        TextureRegion runAnimation[] = new TextureRegion[4];
 
         for (int i = 0; i < 5; i++) {
             idleAnimation[i] = idleSheet[i][0];
@@ -66,40 +47,29 @@ public class Tank extends Player {
             deathAnimation[i] = deathSheet[i][0];
         }
 
-<<<<<<< Updated upstream
-        animations[0] = new Animation<>(40f, idleAnimation);
-        animations[1] = new Animation<>(50f, attackAnimation);
-        animations[2] = new Animation<>(50f, hitAnimation);
-        animations[3] = new Animation<>(40f, deathAnimation);
-=======
-        for (int i = 0; i < 4; i++) {
-            runAnimation[i] = runSheet[i][0];
-        }
-
         animations[0] = new Animation<>(0.1f, idleAnimation);
         animations[1] = new Animation<>(0.1f, attackAnimation);
         animations[2] = new Animation<>(0.1f, hitAnimation);
         animations[3] = new Animation<>(0.1f, deathAnimation);
-        animations[4] = new Animation<>(0.1f, runAnimation);
->>>>>>> Stashed changes
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-    }
+        speedBonusTimer -= delta;
 
-    @Override
-    public void useSpecial() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'useSpecial'");
+        if (speedBonusTimer > 0) {
+            speed = 2 * SPEED;
+        }
+        else {
+            speed = SPEED;
+        }
     }
 
     @Override
     public void draw() {
-<<<<<<< Updated upstream
-        boolean isIdle = (startingWeapon.getCooldownTimeLeft() > 50f);
-        boolean isHit = (lastHit < 25f);
+        boolean isIdle = (startingWeapon.getCooldownTimeLeft() > 0.05f);
+        boolean isHit = (lastHit < 0.01f);
 
         if (isDead() && isFacingRight) {
             game.batch.draw((TextureRegion) animations[3].getKeyFrame(deadtime, false), getPosition().x - 3*TANK_WIDTH/2, getPosition().y - 3*TANK_HEIGHT/2, 3*TANK_WIDTH, 3*TANK_HEIGHT);
@@ -134,27 +104,14 @@ public class Tank extends Player {
         System.out.println(health);
         if (specialAbilityTimer < 0) {
             heal(50);
-            speedBonusTimer = 200f;
+            speedBonusTimer = 1f;
             specialAbilityTimer = specialAbilityCooldown;
             System.out.println("Special ability used.");
             System.out.println(health);
         }
-=======
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'draw'");
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFrame'");
->>>>>>> Stashed changes
+    private void heal(float amount) {
+        health = Math.min(MAX_HEALTH, health + amount);
     }
-
-    @Override
-    public void createBody() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createBody'");
-    }
-    
 }

@@ -1,7 +1,11 @@
 package com.veyrongaming.eternalsemester;
 
+import com.veyrongaming.eternalsemester.characters.Tank2;
+
 public class Constants {
-	public static final float VIEWPORT_WIDTH = 1600f;
-	public static final float VIEWPORT_HEIGHT = 900f;
+	public static final int VIEWPORT_WIDTH = 1600;
+	public static final int VIEWPORT_HEIGHT = 900;
 	public static final float ENEMY_SPAWN_BUFFER = 150f;
+
+	public static Player player = new Tank2();
 }

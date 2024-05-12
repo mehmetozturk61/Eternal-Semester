@@ -48,6 +48,8 @@ public abstract class Character {
 		this.direction = new Vector2();
 		this.body = createBody();
 		
+		startingWeapon.setCharacter(this);
+		startingWeapon.setWorld(world);
 		weapons = new ArrayList<Weapon>();
 		weapons.add(startingWeapon);
     }

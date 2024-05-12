@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.veyrongaming.eternalsemester.characters.Assassin;
 import com.veyrongaming.eternalsemester.characters.Character;
-import com.veyrongaming.eternalsemester.characters.Tank;
+import com.veyrongaming.eternalsemester.characters.Tank2;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
 public class GameScreen implements Screen {
@@ -33,8 +33,13 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         enemies = new ArrayList<Enemy>();
         world = new World(new Vector2(0, 0), false);
+<<<<<<< Updated upstream
         world.setContactListener(new GameContanctListener());
         character = new Tank(game, null, world);
+=======
+        world.setContactListener(new GameContactListener());
+        character = new Tank2(game, null, world);
+>>>>>>> Stashed changes
         weapons = character.getWeapons();
         b2dr = new Box2DDebugRenderer();
 
@@ -79,8 +84,9 @@ public class GameScreen implements Screen {
             spawnEnemy();
         }
 
-        world.step(1/144f, 6, 2);
+        world.step(delta, 6, 2);
         b2dr.render(world, camera.combined);
+        update(delta);
     }
 
     public void update(float delta) {
