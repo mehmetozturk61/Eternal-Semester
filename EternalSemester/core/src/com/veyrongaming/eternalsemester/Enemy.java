@@ -1,6 +1,8 @@
 package com.veyrongaming.eternalsemester;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,53 +10,60 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.characters.Character;
+import com.veyrongaming.eternalsemester.characters.Player;
 
 public class Enemy {
-	private Texture texture;
-	private Vector2 position;
-	private float attack;
-	private float speed;
-	private float health;
-	private float slowFactor;
-	private float slowTimer;
-	private World world;
-	private Body body;
-	private float attackCooldown = 250;
-	private float attackTimer = 0;
+	public EternalSemester game;
+	public World world;
+	public Body body;
+	public Player player;
+    public Vector2 position;
+    public Vector2 direction;
+    public String name;
+    public int health;
+    public int speed;
+	public int damage;
+    public Animation<TextureRegion> animations[];
+    public boolean isFacingRight = true;
+    public boolean isHit = false;
+    public float stateTimer = 0;
+	public float attackCooldown;
+	public float attackTimer = 0;
 	private boolean canAttack = false; // Whether the enemy can attack the player or not (range)
-	private Character character;
 	
-	public Enemy(Texture texture, Vector2 spawnPosition, float attack, float speed, float health, World world) {
-		this.texture = texture;
-		this.position = spawnPosition;
-		this.attack = attack;
-		this.speed = speed;
-		this.health = health;
+	public Enemy(EternalSemester game, World world, Player player, String name, int health, int speed, int damage, float attackCooldown) {
+		this.game = game;
 		this.world = world;
-		this.body = createBody();
+		this.player = player;
+		this.name = name;
+		this.health = health;
+		this.speed = speed;
+		this.damage = damage;
+		this.attackCooldown = attackCooldown;
+
+		createBody();
 	}
 	
-	public void update(float delta, Character character) {
+	public void update(float delta, Player player) {
 		// Move towards player
-		Vector2 direction = character.getPosition().sub(position);
+		Vector2 direction = player.getPosition().sub(position);
 		direction.nor(); // Normalize to get unit vector
 
-		body.setLinearVelocity(new Vector2(300 * direction.x * speed * delta, 300 * direction.y * speed * delta));
+		body.setLinearVelocity(direction.cpy().scl(speed));
 		position = body.getPosition();
 
-		if (attackTimer > 0) {
-			attackTimer -= delta;
-		}
+		attackTimer += delta;
+
 
 		if (canAttack) {
-			attack(character);
+			attack();
 		}
 	}
 
-	public void attack(Character character) {
-		if (attackTimer <= 0) {
-			character.takeDamage(attack);
-			attackTimer = attackCooldown;
+	public void attack() {
+		if (attackTimer >= attackCooldown) {
+			player.health -= damage;
+			attackTimer = 0;
 		}
 	}
 

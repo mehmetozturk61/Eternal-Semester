@@ -18,7 +18,8 @@ import com.veyrongaming.eternalsemester.Constants;
 import com.veyrongaming.eternalsemester.Enemy;
 import com.veyrongaming.eternalsemester.EternalSemester;
 import com.veyrongaming.eternalsemester.characters.Assassin;
-import com.veyrongaming.eternalsemester.characters.Tank2;
+import com.veyrongaming.eternalsemester.characters.Player;
+import com.veyrongaming.eternalsemester.characters.Tank;
 import com.veyrongaming.eternalsemester.characters.Warrior;
 import com.veyrongaming.eternalsemester.characters.Wizard;
 import com.veyrongaming.eternalsemester.weapons.BattleAxe;
@@ -34,7 +35,7 @@ public class Level1 implements Screen {
     public Player player;
     public ArrayList<Enemy> enemies;
     public ArrayList<Weapon> weapons;
-    public Boss boss;
+    //public Boss boss;
 
     public TmxMapLoader mapLoader;
     public TiledMap map;
@@ -47,19 +48,21 @@ public class Level1 implements Screen {
         camera = new OrthographicCamera();
         port = new FitViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT, camera);
         world = new World(new Vector2(0, 0), false);
-        player = Constants.player;
+        player = new Tank(game, world); // BİR İŞARET
         enemies = new ArrayList<Enemy>();
         weapons = new ArrayList<Weapon>();
-        boss = new Level1Boss();
+        //boss = new Level1Boss();
         
-        if (player instanceof Assassin) weapons.add(new Dagger());
-        else if (player instanceof Tank2) weapons.add(new BattleAxe());
-        else if (player instanceof Warrior) weapons.add(new Sword());
-        else if (player instanceof Wizard) weapons.add(new Staff());
+        /* if (player instanceof Assassin) weapons.add(new Dagger());
+        else */  if (player instanceof Tank) weapons.add(new BattleAxe(game, world, player));
+        /* else if (player instanceof Warrior) weapons.add(new Sword());
+        else if (player instanceof Wizard) weapons.add(new Staff()); */
+ 
+        player.setWeapon(weapons.get(0));
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1.tmx");
-        otmr = new OrthogonalTiledMapRenderer(map);
+        /* mapLoader = new TmxMapLoader();
+        map = mapLoader.load("campus1.tmx");
+        otmr = new OrthogonalTiledMapRenderer(map); */
         b2dr = new Box2DDebugRenderer();
 
         camera.position.set(Constants.VIEWPORT_WIDTH / 2, Constants.VIEWPORT_HEIGHT / 2, 0);
@@ -67,6 +70,8 @@ public class Level1 implements Screen {
 
     @Override
     public void render(float delta) {
+        update(delta);
+
         Gdx.gl.glClearColor(0.2f, 0.5f, 0.3f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -74,39 +79,41 @@ public class Level1 implements Screen {
 
         game.batch.begin();
 
-        player.draw();
+        player.draw(delta);
         for (Enemy enemy : enemies) {
-            enemy.draw();
+            enemy.draw(delta);
         }
         for (Weapon weapon : weapons) {
-            weapon.draw();
+            weapon.draw(delta);
         }
-        boss.draw(); // Boss bi süreden sonra gelcek
+        //boss.draw(); // Boss bi süreden sonra gelcek
 
         game.batch.end();
 
-        otmr.render();
+        /* otmr.render(); */
         b2dr.render(world, camera.combined);
-        update(delta);
         world.step(1/60f, 6, 2);
     }
 
     public void update(float delta) {
         player.update(delta);
 
+        camera.position.set(player.position, 0);
+        camera.update();
+
         ArrayList<Enemy> enemiesCopy = new ArrayList<Enemy>(enemies);
         for (Enemy enemy : enemiesCopy) {
             enemy.update(delta, player);
 
             if (enemy.isDead()) {
-                enemy.remove(enemy);
+                enemies.remove(enemy);
                 enemy.dispose();
             }
         }
         for (Weapon weapon : weapons) {
-            weapon.update(delta, player);
+            weapon.update(delta);
         }
-        boss.update();
+        //boss.update();
     }
 
     @Override
@@ -132,7 +139,7 @@ public class Level1 implements Screen {
 
     @Override
     public void dispose() {
-        otmr.dispose();
+        /* otmr.dispose();
         b2dr.dispose();
         player.dispose();
         boss.dispose();
@@ -143,6 +150,6 @@ public class Level1 implements Screen {
             weapon.dispose();
         }
         map.dispose();
-        world.dispose();
+        world.dispose(); */
     }
 }

@@ -1,84 +1,89 @@
 package com.veyrongaming.eternalsemester.weapons;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.veyrongaming.eternalsemester.Enemy;
+import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.EternalSemester;
-import com.veyrongaming.eternalsemester.GameScreen;
-import com.veyrongaming.eternalsemester.characters.Character;
+import com.veyrongaming.eternalsemester.characters.Player;
 
 public class BattleAxe extends Weapon {
-    Texture attack = new Texture("Ball and Chain Bot/attack animation.png");
-    private Animation<TextureRegion> animation;
-    private TextureRegion attackAnimation[];
+    public final int FRAME_WIDTH = 126;
+    public final int FRAME_HEIGHT = 39;
+    public final int SCALE = 3;
+    public final int ANIMATION_SPACE = 30;
+    public final float BATTLE_AXE_DURATION = 0.4f;
 
-    public BattleAxe() {
-        super("Battle Axe", 750f, 30);
+    public static float cooldownBattleAxe = 2f;
+    public static String name = "Battle Axe";
+    public static int damageBattleAxe = 30;
 
-        this.body = createBody();
+    public Texture attack = new Texture("Ball and Chain Bot/attack animation.png");
+    public Animation<TextureRegion> animation;
+
+    public BattleAxe(EternalSemester game, World world, Player player) {
+        super(game, world, player, cooldownBattleAxe, name, damageBattleAxe);
+        ANIMATION_DURATION = BATTLE_AXE_DURATION;
 
         TextureRegion attackSheet[][] = TextureRegion.split(attack, 126, 39);
-        attackAnimation = new TextureRegion[5];
+        TextureRegion attackAnimation[];
+        attackAnimation = new TextureRegion[4];
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             attackAnimation[i] = attackSheet[i][0];
         }
 
-<<<<<<< Updated upstream
-        animation = new Animation<>(50f, attackAnimation);
-=======
-        animation = new Animation<>(0.12f, attackAnimation);
->>>>>>> Stashed changes
+        animation = new Animation<>(0.1f, attackAnimation);
+    }
+
+    
+    @Override
+    public void attack() {
+        body.setActive(true);
     }
 
     @Override
-    public void draw(EternalSemester game, Character character) {
-        if (direction.x >= 0)
-            game.batch.draw((TextureRegion) animation.getKeyFrame(statetime, false), character.getPosition().x - 3*126/2 + 30, character.getPosition().y - 3*39/2, 3*126/2 - 30, 3*39/2, 3*126, 3*39, 1, 1, direction.angleDeg());
-        else
-            game.batch.draw((TextureRegion) animation.getKeyFrame(statetime, false), character.getPosition().x + 3*126/2 - 30, character.getPosition().y - 3*39/2, -3*126/2 + 30, 3*39/2, -3*126, 3*39, 1, 1, 180 + direction.angleDeg());
-        }
+    public void draw(float delta) {
+        if (stateTimer > 0 && stateTimer < ANIMATION_DURATION) {
+            stateTimer += delta;
+            TextureRegion tr = (TextureRegion) animation.getKeyFrame(stateTimer, false);
 
-    public Body createBody() {
+            if (direction.x > 0) {
+                game.batch.draw(tr, player.getPosition().x - FRAME_WIDTH/2 + ANIMATION_SPACE, player.getPosition().y - FRAME_HEIGHT/2, FRAME_WIDTH/2 - ANIMATION_SPACE, FRAME_HEIGHT/2, FRAME_WIDTH, FRAME_HEIGHT, SCALE, 1.5f * SCALE, direction.angleDeg());
+            }
+            else if (direction.x <= 0)
+                game.batch.draw(tr, player.getPosition().x + FRAME_WIDTH/2 - ANIMATION_SPACE, player.getPosition().y - FRAME_HEIGHT/2, -FRAME_WIDTH/2 + ANIMATION_SPACE, FRAME_HEIGHT/2, -FRAME_WIDTH, FRAME_HEIGHT, SCALE, 1.5f * SCALE, 180 + direction.angleDeg());
+            
+            if (stateTimer > ANIMATION_DURATION / 2) body.setActive(false);
+        }
+    }
+
+    @Override
+    public void createBody() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.KinematicBody;
-        bodyDef.position.set(character.getPosition().x + 10, character.getPosition().y);
+        bodyDef.position.set(800, 450);
 
         Body body = world.createBody(bodyDef);
-		body.setFixedRotation(true);
+		body.setFixedRotation(false);
+
+        FixtureDef fixture = new FixtureDef();
+        fixture.density = 1f;
+        fixture.filter.categoryBits = 0;
+        fixture.filter.maskBits = 0;
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(3 * 24 / 2, 3 * 24 / 2);
-        body.createFixture(shape, 10.0f).setUserData(this);
+        shape.setAsBox(85, 60);
+        fixture.shape = shape;
+        
+        body.createFixture(fixture).getUserData();
         shape.dispose();
-
-        return body;
-    }
-
-    @Override
-    public void attack(Character character, GameScreen gameScreen) {
-        float attackRange = 150f;
-        float coneAngle = 90f;
-
-        ArrayList<Enemy> enemies = gameScreen.getEnemies();
-
-        for (Enemy enemy : enemies) {
-            Vector2 enemyDirection = enemy.getPosition().sub(character.getPosition());
-
-            if (enemyDirection.len() <= attackRange) {
-                float angleToEnemy = 180 - Math.abs(180 - direction.angleDeg(enemyDirection));
-                if (angleToEnemy <= coneAngle / 2f || enemyDirection.len() <= attackRange / 10f) {
-                    enemy.takeDamage(coneAngle);
-                }
-            }
-        }
+        this.body = body;
+        body.setActive(false);
     }
 }
