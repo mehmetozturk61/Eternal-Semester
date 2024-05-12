@@ -6,6 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +23,8 @@ import com.veyrongaming.eternalsemester.weapons.Weapon;
 
 public class GameScreen implements Screen {
     public EternalSemester game;
+    private OrthogonalTiledMapRenderer mapRenderer;
+    private TiledMap map;
     private OrthographicCamera camera;
     private Character character;
     private ArrayList<Enemy> enemies;
@@ -30,6 +35,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(EternalSemester game) {
         this.game = game;
+        map = new TmxMapLoader().load("maps/maps/campus1.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         enemies = new ArrayList<Enemy>();
         world = new World(new Vector2(0, 0), false);
@@ -64,7 +71,8 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(0.2f, 0.5f, 0.3f, 1f);
 
         game.batch.begin();
-        
+        mapRenderer.render();
+        mapRenderer.setView(camera);
         character.draw();
         
         for (Enemy enemy : enemies) {
