@@ -5,13 +5,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MyGdxGame;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -26,8 +35,12 @@ public class MainMenu implements Screen{
     private Table table;
     private Label header;
     private Stage stage; 
-    private int width = Gdx.graphics.getWidth();
-    private int height = 1964;
+    
+   
+    SpriteBatch batch;
+    Sprite sprite;
+
+
     
 
     public MainMenu(MyGdxGame game)
@@ -37,53 +50,69 @@ public class MainMenu implements Screen{
 
     @Override
     public void show() {
-        stage = new Stage(new FitViewport(width, height));
-        Gdx.input.setInputProcessor((InputProcessor) stage);
+
+        stage = new Stage(new ExtendViewport(game.width,game.height));
+        Gdx.input.setInputProcessor(stage);
         Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        
-        table = new Table();
-		table.setWidth((float) stage.getWidth());
-        table.setSize(width/3, height/10);
-		//table.align(Align.bottom);		
-		table.setPosition((width-table.getWidth())/2, (height/2-table.getHeight())/2);
-        //table.center();
 
-		TextButton start = new TextButton("Start", skin2);
-		TextButton settings = new TextButton("Settings", skin2);
-		TextButton changeProfile = new TextButton("Change Profile", skin2);
-		TextButton exit = new TextButton("Exit", skin2);
-		Label gameName = new Label("Eternal Semester", skin2);
+            table = new Table();
+            table.setFillParent(true);
+            stage.addActor(table);
 
-        gameName.setBounds(0, 0, width, 40);
-        
-        gameName.setFontScale(width/100);
-		gameName.setPosition(0, Gdx.graphics.getHeight());
-        gameName.debug();
-        stage.addActor(gameName);
-		
-		
-		float buttonWidth = 50; // Adjust width as needed
-        float buttonHeight = 50; // Adjust height as needed
+          
+            // Label for the game name
+                    //Label gameName = new Label("Eternal Semester", skin2);
+                    //gameName.setFontScale(game.width/300);
+            //gameName.setAlignment(Align.center);;
+           // stage.addActor(gameName);
+                    //table.add(gameName).align(Align.center|Align.top).padTop(game.height/40);
+            Label gameName = new Label("Eternal Semester", skin2);
+            gameName.setFontScale(game.height/200);
+            float labelWidth = gameName.getPrefWidth();
+            float labelHeight = gameName.getPrefHeight();
+            gameName.setBounds(0,0, labelWidth, labelHeight);
+            gameName.setPosition((game.width-labelWidth)/2, (game.height-labelHeight/2));
+            //gameName.debug();
+            stage.addActor(gameName);
+            
+            table.row();
 
-        start.setSize(50, 10);
-        settings.setSize(buttonWidth, buttonHeight);
-        changeProfile.setSize(buttonWidth, buttonHeight);
-        exit.setSize(buttonWidth, buttonHeight);
+            // Start button
+            TextButton start = new TextButton("Start", skin2);
+            start.getLabel().setFontScale(1);; // Increase font size
+            //table.add(start).width(300).height(100).pad(10); // Increase button size and add padding
+            table.add(start).padTop(game.height/3);
+           
+            table.row();
 
-		
-		table.row();
+            // Settings button
+            TextButton settings = new TextButton("Settings", skin2);
+            settings.getLabel().setFontScale(1); // Increase font size
+            //table.add(settings).width(300).height(100).pad(10); // Increase button size and add padding
+            table.add(settings).pad(game.height/300);
+            table.row();
 
-        // Add padding and buttons to the table
-        
-        table.add(start).padBottom(10);
-        table.row();
-        table.add(settings).padBottom(10);
-        table.row(); 
-        table.add(changeProfile).padBottom(10);
-        table.row();
-        table.add(exit);
-        //table.debug();
+            TextButton changeProfile = new TextButton("Change Profile", skin2);
+            changeProfile.getLabel().setFontScale(1); // Increase font size
+            //table.add(changeProfile).width(300).height(100).pad(10); // Increase button size and add padding
+            table.add(changeProfile).pad(game.height/300);
+            table.row();
 
+            TextButton exit = new TextButton("Exit", skin2);
+            exit.getLabel().setFontScale(1); // Increase font size
+            //table.add(exit).width(300).height(100).pad(10); // Increase button size and add padding
+            table.add(exit).pad(game.height/300);
+            table.row();
+
+        table.center();
+        table.pad(10);
+
+        changeProfile.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(game.loginScreen);
+			}
+		});
 
         settings.addListener(new ClickListener() {
 			@Override
@@ -99,8 +128,15 @@ public class MainMenu implements Screen{
 			}
 		});
 
+        //table.debug();
+        
         stage.setDebugAll(false);
         stage.addActor(table);
+        
+        batch = new SpriteBatch();
+        sprite = new Sprite(new Texture(Gdx.files.internal("background.jpeg")));
+        sprite.setSize(1920, 1080);
+        
     }
 
     @Override
@@ -108,6 +144,9 @@ public class MainMenu implements Screen{
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT );
         stage.act(delta); 
+        batch.begin();
+        sprite.draw(batch);
+        batch.end();
         stage.draw();
     }
 
