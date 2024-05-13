@@ -25,6 +25,9 @@ public class MyGdxGame extends Game {
 	public int width = 1920;//3024
     public int height = 1080;//1964
 
+	public boolean isFullScreen = true;
+	public boolean isUsingMouse = false;
+
 	// Array of key bindings and their default keys
 	public String[][] bindings = {
 		{"Move Up", "W"},
@@ -35,7 +38,7 @@ public class MyGdxGame extends Game {
 	
 		{"Move Left", "A"},
 		
-		{"Play With Mouse", "X"},
+		{"Play With Mouse", ""},
 		
 	};
 
