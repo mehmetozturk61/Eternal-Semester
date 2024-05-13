@@ -98,6 +98,7 @@ public class LoginScreen implements Screen {
         login.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.mainMenuScreen);
             }
         });
@@ -107,6 +108,7 @@ public class LoginScreen implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.signUpScreen);
             }
         });

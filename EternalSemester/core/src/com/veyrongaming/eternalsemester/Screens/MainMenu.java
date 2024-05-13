@@ -113,6 +113,7 @@ public class MainMenu implements Screen{
         changeProfile.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.loginScreen);
 			}
 		});
@@ -120,6 +121,7 @@ public class MainMenu implements Screen{
         settings.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.settingsScreen);
 			}
 		});

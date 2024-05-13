@@ -66,6 +66,7 @@ public class SettingsScreen implements Screen{
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.mainMenuScreen);
             }
         });
@@ -91,10 +92,28 @@ public class SettingsScreen implements Screen{
         if (game.isFullScreen == false)
             windowModeSelectBox.setSelected("Windowed");
         final Slider soundSlider = new Slider(0, 100, 1, false, skin);
+            soundSlider.setValue(game.volume*100);
+        final Slider efektSlider = new Slider(0, 100, 1, false, skin);
+            efektSlider.setValue(game.soundEffectVolume*100);
     
         TextButton keyBindingsButton = new TextButton("Key Bindings", skin);
 
         // Listener'lar ekleniyor
+        soundSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.volume = soundSlider.getValue()/100;
+                game.music.setVolume(game.volume);
+                
+            }
+        });
+        efektSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.soundEffectVolume = efektSlider.getValue()/100;
+                
+            }
+        });
 
         resolutionSelectBox.addListener(new ChangeListener() {
             @Override
@@ -102,18 +121,21 @@ public class SettingsScreen implements Screen{
                 // When an item is selected, this method will be called
                 if (resolutionSelectBox.getSelected().equals("1920x1080"))
                 {
+                    game.soundEffect.play(game.soundEffectVolume);
                     game.setWidth(1920);
                     game.setHeight(1080);
                     game.setScreen(game.settingsScreen);
                 }
                 if (resolutionSelectBox.getSelected().equals("1280x720"))
                 {
+                    game.soundEffect.play(game.soundEffectVolume);
                     game.setWidth(1280);
                     game.setHeight(720);
                     game.setScreen(game.settingsScreen);
                 }
                 if (resolutionSelectBox.getSelected().equals("1600x900"))
                 {
+                    game.soundEffect.play(game.soundEffectVolume);
                     game.setWidth(1600);
                     game.setHeight(900);
                     game.setScreen(game.settingsScreen);
@@ -128,11 +150,13 @@ public class SettingsScreen implements Screen{
                 // When an item is selected, this method will be called
                 if (windowModeSelectBox.getSelected().equals("Fullscreen"))
                 {
+                    game.soundEffect.play(game.soundEffectVolume);
                     game.isFullScreen = true;
                     game.setScreen(game.settingsScreen);
                 }
                 if (windowModeSelectBox.getSelected().equals("Windowed"))
                 {
+                    game.soundEffect.play(game.soundEffectVolume);
                     game.isFullScreen = false;
                     game.setScreen(game.settingsScreen);
                 }
@@ -143,16 +167,11 @@ public class SettingsScreen implements Screen{
         keyBindingsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.keyBindingsScreen);
 			}
 		});
 
-        soundSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Frame rate set to: " + soundSlider.getValue());
-            }
-        });
 
         // Layout düzenlemesi
         Label title = new Label("Settings", skin);
@@ -167,6 +186,9 @@ public class SettingsScreen implements Screen{
         table.row();
         table.add(new Label("Volume", skin)).pad(game.width/300);
         table.add(soundSlider).left().pad(10).width(game.width/3);
+        table.row();
+        table.add(new Label("Sound Effects", skin)).pad(game.width/300);
+        table.add(efektSlider).left().pad(10).width(game.width/3);
         table.row();
      
         table.add(keyBindingsButton).colspan(2).center().padTop(10);

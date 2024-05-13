@@ -82,6 +82,7 @@ public class KeyBindings implements Screen, InputProcessor{
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 game.setScreen(game.settingsScreen);
             }
         });
@@ -129,6 +130,7 @@ public class KeyBindings implements Screen, InputProcessor{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // When an item is selected, this method will be called
+                game.soundEffect.play(game.soundEffectVolume);
                 if (checkBox.isChecked())
                 {
                     game.isUsingMouse = true;
@@ -142,6 +144,7 @@ public class KeyBindings implements Screen, InputProcessor{
         changeButton[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 keyField[0].setText("-");
                 captureKeyInput();
             }
@@ -151,6 +154,7 @@ public class KeyBindings implements Screen, InputProcessor{
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
                         String keyName = Input.Keys.toString(keycode); // Kodu tuş ismine çevirir
+                        
                         if (!keyName.equals(game.bindings[1][1]) && !keyName.equals(game.bindings[2][1]) && !keyName.equals(game.bindings[3][1]) && !keyName.equals(game.bindings[4][1]))
                         {
                             keyField[0].setText(keyName); // TextField'a tuş ismini yaz
@@ -167,6 +171,7 @@ public class KeyBindings implements Screen, InputProcessor{
         changeButton[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 keyField[1].setText("-");
                 captureKeyInput();
             }
@@ -191,6 +196,7 @@ public class KeyBindings implements Screen, InputProcessor{
         changeButton[2].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 keyField[2].setText("-");
                 captureKeyInput();
             }
@@ -217,6 +223,7 @@ public class KeyBindings implements Screen, InputProcessor{
         changeButton[3].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 keyField[3].setText("-");
                 captureKeyInput();
             }
@@ -242,6 +249,7 @@ public class KeyBindings implements Screen, InputProcessor{
         changeButton[4].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.soundEffect.play(game.soundEffectVolume);
                 keyField[4].setText("-");
                 captureKeyInput();
             }
