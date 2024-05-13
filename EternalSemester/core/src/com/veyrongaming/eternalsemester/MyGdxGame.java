@@ -4,6 +4,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.game.Screens.KeyBindings;
 import com.mygdx.game.Screens.LoginScreen;
@@ -27,6 +30,13 @@ public class MyGdxGame extends Game {
 
 	public boolean isFullScreen = true;
 	public boolean isUsingMouse = false;
+
+	public Music music;
+	public Float volume = (float) 100;
+
+	public Sound soundEffect;
+	public float soundEffectVolume = (float) 50;
+	public long id;
 
 	// Array of key bindings and their default keys
 	public String[][] bindings = {
@@ -61,6 +71,12 @@ public class MyGdxGame extends Game {
 		//height = Gdx.graphics.getHeight();
 		//System.out.println(width);
 		//System.out.println(height);
+		music = Gdx.audio.newMusic(Gdx.files.internal("EternalSemesterThemeSong.mp3"));
+		soundEffect = Gdx.audio.newSound(Gdx.files.internal("butonefekt.mp3"));
+		music.play();
+		music.setLooping(true);
+		
+
 
 		mainMenuScreen = new MainMenu(this);
 		settingsScreen = new SettingsScreen(this);
