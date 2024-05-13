@@ -63,4 +63,8 @@ public abstract class Weapon {
 	public Vector2 getDirection() {
 		return direction.cpy();
 	}
+
+	public void dispose() {
+		world.destroyBody(body);
+	}
 }

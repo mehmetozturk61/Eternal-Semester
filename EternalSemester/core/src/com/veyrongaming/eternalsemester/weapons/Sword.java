@@ -3,8 +3,8 @@ package com.veyrongaming.eternalsemester.weapons;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
-import com.veyrongaming.eternalsemester.Enemy;
 import com.veyrongaming.eternalsemester.GameScreen;
+import com.veyrongaming.eternalsemester.Enemies.Enemy;
 import com.veyrongaming.eternalsemester.characters.Character;
 
 public class Sword extends Weapon {

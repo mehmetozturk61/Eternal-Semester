@@ -3,9 +3,12 @@ package com.veyrongaming.eternalsemester.characters;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.veyrongaming.eternalsemester.EternalSemester;
@@ -17,8 +20,8 @@ public class Tank extends Player {
     public static final int HEAL = 50;
 
     public static String name = "Tank";
-    public static int maxHealth = 300;
-    public static int initialSpeed = 300;
+    public static int maxHealth = 1500;
+    public static int initialSpeed = 75;
     public static float specialCooldownTank = 4f;
 
     public float speedBonusTimer = 0;
@@ -44,7 +47,8 @@ public class Tank extends Player {
         TextureRegion runSheet[][] = TextureRegion.split(run, TANK_WIDTH, TANK_HEIGHT);
         TextureRegion idleAnimation[] = new TextureRegion[5];
         TextureRegion attackAnimation[] = new TextureRegion[4];
-        TextureRegion hitAnimation = hitSheet[1][0];
+        //TextureRegion hitAnimation[] = new TextureRegion[2];
+        TextureRegion hitAnimation = hitSheet [1][0];
         TextureRegion deathAnimation[] = new TextureRegion[5];
         TextureRegion runAnimation[] = new TextureRegion[4];
 
@@ -56,6 +60,10 @@ public class Tank extends Player {
             attackAnimation[i] = attackSheet[i][0];
         }
 
+        /* for (int i = 0; i < 2; i++) {
+            hitAnimation[i] = hitSheet[i][0];
+        }
+ */
         for (int i = 0; i < 5; i++) {
             deathAnimation[i] = deathSheet[i][0];
         }
@@ -66,7 +74,7 @@ public class Tank extends Player {
 
         animations[0] = new Animation<>(0.1f, deathAnimation);
         animations[1] = new Animation<>(0.1f, attackAnimation);
-        animations[2] = new Animation<>(0.1f, hitAnimation);
+        animations[2] = new Animation<>(0.4f, hitAnimation);
         animations[3] = new Animation<>(0.1f, runAnimation);
         animations[4] = new Animation<>(0.1f, idleAnimation);
     }
@@ -114,6 +122,9 @@ public class Tank extends Player {
                 break;
         }
 
+        if (previousState == State.HIT)
+            isHit = false;
+
         if (!isFacingRight && !tr.isFlipX()) 
             tr.flip(true, false);
         else if (isFacingRight && tr.isFlipX())
@@ -133,18 +144,30 @@ public class Tank extends Player {
         Body body = world.createBody(bodyDef);
 		body.setFixedRotation(true);
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(3 * 24 / 2, 3 * 24 / 2);
-        body.createFixture(shape, 10.0f).setUserData(this);
+        CircleShape shape = new CircleShape();
+        shape.setRadius(3 * 24 / 2);
+
+        FixtureDef fixture = new FixtureDef();
+        fixture.density = 10f;
+        fixture.shape = shape;
         shape.dispose();
+        body.createFixture(fixture).setUserData(this);
 
         this.body = body;
     }
 
     public void draw(float delta) {
         game.batch.draw(getFrame(delta), getPosition().x - 3*TANK_WIDTH/2, getPosition().y - 3*TANK_HEIGHT/2, 3*TANK_WIDTH, 3*TANK_HEIGHT);
-        game.font.draw(game.batch, position.x + ", " + position.y, position.x, position.y);
+        game.font.draw(game.batch, health + "", position.x, position.y);
     }
 
-    
+    @Override
+    public void dispose() {
+        super.dispose();
+        idle.dispose();
+        attack.dispose();
+        hit.dispose();
+        run.dispose();
+        death.dispose();
+    }    
 }

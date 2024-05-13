@@ -5,7 +5,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.veyrongaming.eternalsemester.characters.Character;
+import com.veyrongaming.eternalsemester.Bosses.Boss;
+import com.veyrongaming.eternalsemester.Enemies.Enemy;
+import com.veyrongaming.eternalsemester.characters.Player;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
 public class GameContactListener implements ContactListener {
@@ -15,18 +17,39 @@ public class GameContactListener implements ContactListener {
         Fixture fb = contact.getFixtureB();
 
         if (fa == null || fb == null) return;
-        if (fa.getUserData() instanceof Weapon || fb.getUserData() instanceof Weapon) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
-        if (isEnemyPlayerContact(fa, fb)) {
-            boolean isFaPlayer = fa.getUserData() instanceof Character;
-            Fixture characterFixture = isFaPlayer ? fa : fb;
+        if (isPlayerEnemyContact(fa, fb)) {
+            boolean isFaPlayer = fa.getUserData() instanceof Player;
             Fixture enemyFixture = isFaPlayer ? fb : fa;
 
-            Character character = (Character) characterFixture.getUserData();
             Enemy enemy = (Enemy) enemyFixture.getUserData();
 
-            enemy.setCanAttack(true, character);
+            enemy.canAttack = true;
+        }
+
+        if (isWeaponEnemyContact(fa, fb)) {
+            boolean isFaWeapon = fa.getUserData() instanceof Weapon;
+            Fixture weaponFixture = isFaWeapon ? fa : fb;
+            Fixture enemyFixture = isFaWeapon ? fb : fa;
+
+            Enemy enemy = (Enemy) enemyFixture.getUserData();
+            Weapon weapon = (Weapon) weaponFixture.getUserData();
+
+            enemy.health -= weapon.damage;
+            enemy.isHit = true;
+        }
+
+        if (isWeaponBossContact(fa, fb)) {
+            boolean isFaWeapon = fa.getUserData() instanceof Weapon;
+            Fixture weaponFixture = isFaWeapon ? fa : fb;
+            Fixture bossFixture = isFaWeapon ? fb : fa;
+
+            Boss boss = (Boss) bossFixture.getUserData();
+            Weapon weapon = (Weapon) weaponFixture.getUserData();
+
+            boss.health -= weapon.damage;
+            boss.isHit = true;
         }
     }
 
@@ -38,15 +61,31 @@ public class GameContactListener implements ContactListener {
         if (fa == null || fb == null) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
-        if (isEnemyPlayerContact(fa, fb)) {
-            boolean isFaPlayer = fa.getUserData() instanceof Character;
-            Fixture characterFixture = isFaPlayer ? fa : fb;
+        if (isPlayerEnemyContact(fa, fb)) {
+            boolean isFaPlayer = fa.getUserData() instanceof Player;
             Fixture enemyFixture = isFaPlayer ? fb : fa;
 
-            Character character = (Character) characterFixture.getUserData();
             Enemy enemy = (Enemy) enemyFixture.getUserData();
 
-            enemy.setCanAttack(false, character);
+            enemy.canAttack = false;
+        }
+
+        if (isWeaponEnemyContact(fa, fb)) {
+            boolean isFaWeapon = fa.getUserData() instanceof Weapon;
+            Fixture enemyFixture = isFaWeapon ? fb : fa;
+
+            Enemy enemy = (Enemy) enemyFixture.getUserData();
+
+            enemy.isHit = false;
+        }
+
+        if (isWeaponBossContact(fa, fb)) {
+            boolean isFaWeapon = fa.getUserData() instanceof Weapon;
+            Fixture bossFixture = isFaWeapon ? fb : fa;
+
+            Boss boss = (Boss) bossFixture.getUserData();
+
+            boss.isHit = false;
         }
     }
 
@@ -56,12 +95,30 @@ public class GameContactListener implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {}
     
-    public boolean isEnemyPlayerContact(Fixture a, Fixture b) {
-        if (a.getUserData() instanceof Character || b.getUserData() instanceof Character) {
+    public boolean isPlayerEnemyContact(Fixture a, Fixture b) {
+        if (a.getUserData() instanceof Player || b.getUserData() instanceof Player) {
             if (a.getUserData() instanceof Enemy || b.getUserData() instanceof Enemy) {
                 return true;
             }
         }
+
+        return false;
+    }
+
+    public boolean isWeaponEnemyContact(Fixture a, Fixture b) {
+        if ((a.isSensor() && a.getUserData() instanceof Weapon && b.getUserData() instanceof Enemy) ||
+            (b.isSensor() && b.getUserData() instanceof Weapon && a.getUserData() instanceof Enemy)) {
+                return true;
+            }
+
+        return false;
+    }
+
+    public boolean isWeaponBossContact(Fixture a, Fixture b) {
+        if ((a.isSensor() && a.getUserData() instanceof Weapon && b.getUserData() instanceof Boss) ||
+            (b.isSensor() && b.getUserData() instanceof Weapon && a.getUserData() instanceof Boss)) {
+                return true;
+            }
 
         return false;
     }

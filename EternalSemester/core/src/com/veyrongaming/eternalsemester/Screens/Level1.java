@@ -15,8 +15,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.veyrongaming.eternalsemester.Constants;
-import com.veyrongaming.eternalsemester.Enemy;
 import com.veyrongaming.eternalsemester.EternalSemester;
+import com.veyrongaming.eternalsemester.GameContactListener;
+import com.veyrongaming.eternalsemester.Bosses.Boss;
+import com.veyrongaming.eternalsemester.Bosses.WidowOfSin;
+import com.veyrongaming.eternalsemester.Enemies.Enemy;
+import com.veyrongaming.eternalsemester.Enemies.Hunter;
+import com.veyrongaming.eternalsemester.Enemies.TamedBeast;
+import com.veyrongaming.eternalsemester.Enemies.TribeWarrior;
 import com.veyrongaming.eternalsemester.characters.Assassin;
 import com.veyrongaming.eternalsemester.characters.Player;
 import com.veyrongaming.eternalsemester.characters.Tank;
@@ -24,6 +30,8 @@ import com.veyrongaming.eternalsemester.characters.Warrior;
 import com.veyrongaming.eternalsemester.characters.Wizard;
 import com.veyrongaming.eternalsemester.weapons.BattleAxe;
 import com.veyrongaming.eternalsemester.weapons.Dagger;
+import com.veyrongaming.eternalsemester.weapons.IceShard;
+import com.veyrongaming.eternalsemester.weapons.Projectile;
 import com.veyrongaming.eternalsemester.weapons.Sword;
 import com.veyrongaming.eternalsemester.weapons.Weapon;
 
@@ -35,7 +43,9 @@ public class Level1 implements Screen {
     public Player player;
     public ArrayList<Enemy> enemies;
     public ArrayList<Weapon> weapons;
-    //public Boss boss;
+    public ArrayList<Projectile> projectiles;
+    public Boss boss;
+    public float shardTimer = 0;
 
     public TmxMapLoader mapLoader;
     public TiledMap map;
@@ -48,10 +58,20 @@ public class Level1 implements Screen {
         camera = new OrthographicCamera();
         port = new FitViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT, camera);
         world = new World(new Vector2(0, 0), false);
+        world.setContactListener(new GameContactListener());
         player = new Tank(game, world); // BİR İŞARET
         enemies = new ArrayList<Enemy>();
         weapons = new ArrayList<Weapon>();
-        //boss = new Level1Boss();
+        projectiles = new ArrayList<Projectile>();
+        boss = new WidowOfSin(game, world, player);
+        for (int i = 0; i < 5; i++) {
+            Enemy enemy = new Hunter(game, world, player);
+            Enemy newenemy = new TamedBeast(game, world, player);
+            Enemy ates = new TribeWarrior(game, world, player);
+            enemies.add(enemy);
+            enemies.add(newenemy);
+            enemies.add(ates);
+        }
         
         /* if (player instanceof Assassin) weapons.add(new Dagger());
         else */  if (player instanceof Tank) weapons.add(new BattleAxe(game, world, player));
@@ -79,14 +99,17 @@ public class Level1 implements Screen {
 
         game.batch.begin();
 
-        player.draw(delta);
         for (Enemy enemy : enemies) {
             enemy.draw(delta);
         }
+        boss.draw(delta); // Boss bi süreden sonra gelcek
+        player.draw(delta);
         for (Weapon weapon : weapons) {
             weapon.draw(delta);
         }
-        //boss.draw(); // Boss bi süreden sonra gelcek
+        for (Projectile projectile : projectiles) {
+            projectile.draw(delta);
+        }
 
         game.batch.end();
 
@@ -98,6 +121,12 @@ public class Level1 implements Screen {
     public void update(float delta) {
         player.update(delta);
 
+        shardTimer += delta;
+        if (shardTimer >= 1.5f) {
+            shardTimer = 0;
+            projectiles.add(new IceShard(game, world, player, player.position));
+        }
+
         camera.position.set(player.position, 0);
         camera.update();
 
@@ -105,7 +134,7 @@ public class Level1 implements Screen {
         for (Enemy enemy : enemiesCopy) {
             enemy.update(delta, player);
 
-            if (enemy.isDead()) {
+            if (enemy.health <= 0 && enemy.stateTimer  >= enemy.deathDuration + 0.15f) {
                 enemies.remove(enemy);
                 enemy.dispose();
             }
@@ -113,7 +142,7 @@ public class Level1 implements Screen {
         for (Weapon weapon : weapons) {
             weapon.update(delta);
         }
-        //boss.update();
+        boss.update(delta, player);
     }
 
     @Override

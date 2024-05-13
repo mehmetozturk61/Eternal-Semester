@@ -85,7 +85,7 @@ public abstract class Player {
                 isFacingRight = false;
             }
 
-            body.setLinearVelocity(direction.cpy().scl(speed));
+            body.setLinearVelocity(new Vector2(direction.x * speed, direction.y * speed));
         }
         // settings açık yön fare
         else {
@@ -115,8 +115,6 @@ public abstract class Player {
         if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
             useSpecial();
         }
-
-        isHit = false;
     }
 
     public State getState() {
@@ -145,6 +143,6 @@ public abstract class Player {
     }
 
     public void dispose() {
-        
+        world.destroyBody(body);
     }
 }

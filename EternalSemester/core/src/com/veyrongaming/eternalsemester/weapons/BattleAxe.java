@@ -17,11 +17,11 @@ public class BattleAxe extends Weapon {
     public final int FRAME_HEIGHT = 39;
     public final int SCALE = 3;
     public final int ANIMATION_SPACE = 30;
-    public final float BATTLE_AXE_DURATION = 0.4f;
+    public final float BATTLE_AXE_DURATION = 0.6f;
 
     public static float cooldownBattleAxe = 2f;
     public static String name = "Battle Axe";
-    public static int damageBattleAxe = 30;
+    public static int damageBattleAxe = 50;
 
     public Texture attack = new Texture("Ball and Chain Bot/attack animation.png");
     public Animation<TextureRegion> animation;
@@ -38,7 +38,7 @@ public class BattleAxe extends Weapon {
             attackAnimation[i] = attackSheet[i][0];
         }
 
-        animation = new Animation<>(0.1f, attackAnimation);
+        animation = new Animation<>(BATTLE_AXE_DURATION / 4f, attackAnimation);
     }
 
     
@@ -72,18 +72,21 @@ public class BattleAxe extends Weapon {
         Body body = world.createBody(bodyDef);
 		body.setFixedRotation(false);
 
-        FixtureDef fixture = new FixtureDef();
-        fixture.density = 1f;
-        fixture.filter.categoryBits = 0;
-        fixture.filter.maskBits = 0;
-
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(85, 60);
+
+        FixtureDef fixture = new FixtureDef();
         fixture.shape = shape;
-        
-        body.createFixture(fixture).getUserData();
+        fixture.isSensor = true;
+        body.createFixture(fixture).setUserData(this);
         shape.dispose();
         this.body = body;
         body.setActive(false);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        attack.dispose();
     }
 }
