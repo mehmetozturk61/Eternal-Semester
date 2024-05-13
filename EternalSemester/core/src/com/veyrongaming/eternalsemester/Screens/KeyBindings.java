@@ -11,14 +11,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -50,7 +53,10 @@ public class KeyBindings implements Screen, InputProcessor{
 
         stage = new Stage(new ExtendViewport(game.width,game.height));
         Gdx.input.setInputProcessor(stage);
-        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        if (game.isFullScreen)
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        else
+            Gdx.graphics.setWindowedMode(game.width, game.height);
 
         Table table = new Table();
         table.setFillParent(true);
@@ -69,7 +75,7 @@ public class KeyBindings implements Screen, InputProcessor{
         // Title label
         Label title = new Label("Key Bindings", skin2);
         title.setFontScale(2);
-        table.add(title).colspan(3).align(Align.center);
+        table.add(title).colspan(6).align(Align.center);
         table.row();
 
         TextButton back = new TextButton("Back", skin2);
@@ -87,8 +93,9 @@ public class KeyBindings implements Screen, InputProcessor{
         
         //int i=0;
         // Create buttons and text fields for each binding
-        for (int i=0;i<6;i++) {
+        for (int i=0;i<5;i++) {
             Label actionLabel = new Label(game.bindings[i][0], skin2);
+            
             keyField[i] = new TextField(game.bindings[i][1], skin2);
             keyField[i].setDisabled(true); // Make the field not editable
 
@@ -108,79 +115,167 @@ public class KeyBindings implements Screen, InputProcessor{
             if (i==1 || i==2 || i==3)
                 table.row();
         }
+        Label actionLabel = new Label(game.bindings[5][0], skin2);
+        CheckBox checkBox = new CheckBox("", skin2);
+        if (game.isUsingMouse)
+            checkBox.setChecked(true);
+        table.add(actionLabel).pad(game.width/300).colspan(2).align(Align.center);
+        table.add(checkBox).pad(game.width/300);
 
+
+
+
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // When an item is selected, this method will be called
+                if (checkBox.isChecked())
+                {
+                    game.isUsingMouse = true;
+                }
+                else
+                    game.isUsingMouse = false;
+            }
+        });
+
+   
         changeButton[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentTextField = keyField[0];
-                currentTextField.setText("-");  // Kullanıcıya yönlendirme
-                game.bindings[0][1]= keyField[0].getText();
+                keyField[0].setText("-");
+                captureKeyInput();
+            }
+
+            private void captureKeyInput() {
+                stage.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        String keyName = Input.Keys.toString(keycode); // Kodu tuş ismine çevirir
+                        if (!keyName.equals(game.bindings[1][1]) && !keyName.equals(game.bindings[2][1]) && !keyName.equals(game.bindings[3][1]) && !keyName.equals(game.bindings[4][1]))
+                        {
+                            keyField[0].setText(keyName); // TextField'a tuş ismini yaz
+                            game.bindings[0][1] = keyName; // İlgili dizi elemanını güncelle
+                            stage.removeListener(this); // Tek tuş vuruşu sonrası dinlemeyi kaldır
+                        }
+                        
+                        return true;
+                    }
+                });
             }
         });
+
         changeButton[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentTextField = keyField[1];
-                currentTextField.setText("-");  // Kullanıcıya yönlendirme
-                game.bindings[1][1]= keyField[1].getText();
+                keyField[1].setText("-");
+                captureKeyInput();
+            }
+
+            private void captureKeyInput() {
+                stage.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        String keyName = Input.Keys.toString(keycode); // Kodu tuş ismine çevirir
+                        if (!keyName.equals(game.bindings[0][1]) && !keyName.equals(game.bindings[2][1]) && !keyName.equals(game.bindings[3][1]) && !keyName.equals(game.bindings[4][1]))
+                        {
+                        keyField[1].setText(keyName); // TextField'a tuş ismini yaz
+                        game.bindings[1][1] = keyName; // İlgili dizi elemanını güncelle
+                        stage.removeListener(this); // Tek tuş vuruşu sonrası dinlemeyi kaldır
+                        }
+                        return true;
+                    }
+                });
             }
         });
+
         changeButton[2].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentTextField = keyField[2];
-                currentTextField.setText("-");  // Kullanıcıya yönlendirme
-                game.bindings[2][1]= keyField[2].getText();
+                keyField[2].setText("-");
+                captureKeyInput();
+            }
+
+            private void captureKeyInput() {
+                stage.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        String keyName = Input.Keys.toString(keycode); // Kodu tuş ismine çevirir
+                        if (!keyName.equals(game.bindings[1][1]) && !keyName.equals(game.bindings[0][1]) && !keyName.equals(game.bindings[3][1]) && !keyName.equals(game.bindings[4][1]))
+                        {
+                            keyField[2].setText(keyName); // TextField'a tuş ismini yaz
+                            game.bindings[2][1] = keyName; // İlgili dizi elemanını güncelle
+                            stage.removeListener(this); // Tek tuş vuruşu sonrası dinlemeyi kaldır
+                            
+                            
+                        }
+                        return true;
+                    }
+                });
             }
         });
+
         changeButton[3].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentTextField = keyField[3];
-                currentTextField.setText("-");  // Kullanıcıya yönlendirme
-                game.bindings[3][1]= keyField[3].getText();
+                keyField[3].setText("-");
+                captureKeyInput();
+            }
+
+            private void captureKeyInput() {
+                stage.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        String keyName = Input.Keys.toString(keycode); // Kodu tuş ismine çevirir
+                        if (!keyName.equals(game.bindings[1][1]) && !keyName.equals(game.bindings[2][1]) && !keyName.equals(game.bindings[0][1]) && !keyName.equals(game.bindings[4][1]))
+                        {
+
+                            keyField[3].setText(keyName); // TextField'a tuş ismini yaz
+                            game.bindings[3][1] = keyName; // İlgili dizi elemanını güncelle
+                            stage.removeListener(this); // Tek tuş vuruşu sonrası dinlemeyi kaldır
+                        }
+                        return true;
+                    }
+                });
             }
         });
+
         changeButton[4].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentTextField = keyField[4];
-                currentTextField.setText("-");  // Kullanıcıya yönlendirme
-                game.bindings[4][1]= keyField[4].getText();
+                keyField[4].setText("-");
+                captureKeyInput();
             }
-        });
-        changeButton[5].addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                currentTextField = keyField[5];
-                currentTextField.setText("-");  // Kullanıcıya yönlendirme
-                game.bindings[5][1]= keyField[5].getText();
+
+            private void captureKeyInput() {
+                stage.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        String keyName = Input.Keys.toString(keycode); // Kodu tuş ismine çevirir
+                        if (!keyName.equals(game.bindings[1][1]) && !keyName.equals(game.bindings[2][1]) && !keyName.equals(game.bindings[3][1]) && !keyName.equals(game.bindings[0][1]))
+                        {
+                            
+                            keyField[4].setText(keyName); // TextField'a tuş ismini yaz
+                            game.bindings[4][1] = keyName; // İlgili dizi elemanını güncelle
+                            stage.removeListener(this); // Tek tuş vuruşu sonrası dinlemeyi kaldır
+
+                        }
+                        return true;
+                    }
+                });
             }
         });
 
-
-        // Klavye dinleyicisi ekleyin
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean keyTyped(InputEvent event, char character) {
-                if (currentTextField != null && character != 0) {
-                    String str = (String.valueOf(character));
-                    if (str == " ")
-                        currentTextField.setText("Space");
-                    else    
-                        currentTextField.setText(str.toUpperCase());
-                    currentTextField = null;  // İşlem bittikten sonra null olarak ayarlayın
-                    return true;
-                }
-                return false;
-            }
-        });
+        
+        
+       
 
         table.center();
         batch = new SpriteBatch();
         sprite = new Sprite(new Texture(Gdx.files.internal("secondbackground.jpeg")));
         sprite.setSize(1920, 1080);
     }
+
+    
 
     @Override
     public void render(float delta) {

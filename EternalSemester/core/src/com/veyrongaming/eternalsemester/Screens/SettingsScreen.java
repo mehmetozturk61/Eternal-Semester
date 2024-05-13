@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -52,7 +53,10 @@ public class SettingsScreen implements Screen{
         
         stage = new Stage(new ExtendViewport(game.width,game.height));
         Gdx.input.setInputProcessor(stage);
-        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        if (game.isFullScreen)
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        else
+            Gdx.graphics.setWindowedMode(game.width, game.height);
        
         Table table = new Table();
         table.setFillParent(true);
@@ -82,6 +86,10 @@ public class SettingsScreen implements Screen{
             resolutionSelectBox.setSelected("1600x900");
         SelectBox<String> windowModeSelectBox = new SelectBox<>(skin);
         windowModeSelectBox.setItems("Fullscreen", "Windowed");
+        if (game.isFullScreen == true)
+            windowModeSelectBox.setSelected("Fullscreen");
+        if (game.isFullScreen == false)
+            windowModeSelectBox.setSelected("Windowed");
         final Slider soundSlider = new Slider(0, 100, 1, false, skin);
     
         TextButton keyBindingsButton = new TextButton("Key Bindings", skin);
@@ -108,6 +116,24 @@ public class SettingsScreen implements Screen{
                 {
                     game.setWidth(1600);
                     game.setHeight(900);
+                    game.setScreen(game.settingsScreen);
+                }
+                
+            }
+        });
+
+        windowModeSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // When an item is selected, this method will be called
+                if (windowModeSelectBox.getSelected().equals("Fullscreen"))
+                {
+                    game.isFullScreen = true;
+                    game.setScreen(game.settingsScreen);
+                }
+                if (windowModeSelectBox.getSelected().equals("Windowed"))
+                {
+                    game.isFullScreen = false;
                     game.setScreen(game.settingsScreen);
                 }
                 

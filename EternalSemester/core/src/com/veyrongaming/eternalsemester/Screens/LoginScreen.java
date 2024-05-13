@@ -46,7 +46,12 @@ public class LoginScreen implements Screen {
 
         stage = new Stage(new ExtendViewport(game.width,game.height));
         Gdx.input.setInputProcessor(stage);
-        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        if (game.isFullScreen)
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        else
+            Gdx.graphics.setWindowedMode(game.width, game.height);
+
+        
 
         table = new Table();
         table.setFillParent(true);
@@ -63,6 +68,13 @@ public class LoginScreen implements Screen {
         //gameName.debug();
         stage.addActor(gameName);
 
+        Label userNotFound = new Label("User not found.", skin2);
+        userNotFound.setFontScale(game.height/540);
+        table.add(userNotFound).colspan(2);
+        userNotFound.setVisible(false);
+        table.row();
+
+
         for (int i=0;i<2;i++) 
         {
             Label actionLabel = new Label(signUpStrings[i], skin2);
@@ -70,20 +82,19 @@ public class LoginScreen implements Screen {
             textField[i] = new TextField("",skin);
 
         
-            if (i==2)
+            if (i==1)
             {
                 textField[1].setPasswordCharacter('*');
                 textField[1].setPasswordMode(true);
             }
-            table.add(actionLabel).pad(game.width/300).align(Align.left);
+            table.add(actionLabel).pad(game.width/300).align(Align.left).colspan(2);
             table.row();
-            table.add(textField[i]).width(game.width/3);
+            table.add(textField[i]).width(game.width/3).colspan(2);
             table.row();
         }
 
-        TextButton login = new TextButton("Login", skin2);
-        table.add(login).pad(50);
 
+        TextButton login = new TextButton("Login", skin2);
         login.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -99,8 +110,13 @@ public class LoginScreen implements Screen {
                 game.setScreen(game.signUpScreen);
             }
         });
-        back.align(Align.topLeft);
-        stage.addActor(back);
+
+        
+        table.add(back).align(Align.left).pad(50);
+        table.add(login);
+        //table.debug();
+        //back.align(Align.topLeft);
+        //stage.addActor(back);
 
 
 

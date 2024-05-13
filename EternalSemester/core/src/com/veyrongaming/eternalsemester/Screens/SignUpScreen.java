@@ -59,7 +59,10 @@ public class SignUpScreen implements Screen {
         
         stage = new Stage(new ExtendViewport(game.width,game.height));
         Gdx.input.setInputProcessor(stage);
-        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        if (game.isFullScreen)
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        else
+            Gdx.graphics.setWindowedMode(game.width, game.height);
 
         table = new Table();
         table.setFillParent(true);
