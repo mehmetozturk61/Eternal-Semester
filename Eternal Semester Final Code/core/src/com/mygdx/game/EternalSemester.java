@@ -69,7 +69,7 @@ public class EternalSemester extends Game {
 		String[] resolution = ((String)DatabaseUtil.getResolution(username)).split("x");
 		width = Integer.parseInt(resolution[0]);
 		height = Integer.parseInt(resolution[1]);
-		isFullScreen = DatabaseUtil.getIsFullscreen(username);
+		//isFullScreen = DatabaseUtil.getIsFullscreen(username);
 		isUsingMouse = DatabaseUtil.getPlayWithMouse(username);
 	}
 
