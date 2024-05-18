@@ -82,6 +82,7 @@ public abstract class Enemy {
 		}
 		if(health <= 0 && cond)
 		{
+			body.setActive(false);
 			level.killCount++;
 			player.gainXP(xp);
 			cond = false;
@@ -90,7 +91,7 @@ public abstract class Enemy {
 		{
 			body.setLinearVelocity(0, 0);
 		}
-		if (health <= 0 && stateTimer  >= deathDuration ) {
+		if (previousState == State.DEATH && stateTimer  >= deathDuration ) {
 			level.enemies.remove(this);
 			this.dispose();
 		}
