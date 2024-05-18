@@ -9,9 +9,12 @@ players progress through.
 -------------------------------------------------------------------------------------------------
 
 ## How to Execute Eternal Semester 🔧
-* Download the codes and MongoDB and run the code in an IDE.
+* Download the codes and MongoDB then run the code in an IDE.
 * Download the Gradle extension for your IDE.
-* To execute, go to gradle extention and use desktop/Tasks/other/run.
+* To execute, go to the gradle extension then desktop -> Tasks -> other ->run.
 -------------------------------------------------------------------------------------------------
 
 ## The Dependencies 💻
+* Windows (Mac is unstable)
+* MongoDB
+* Java compiler
