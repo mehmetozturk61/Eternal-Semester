@@ -159,14 +159,14 @@ public class SettingsScreen implements Screen{
                 {
                     Constants.soundEffect.play(game.soundEffectVolume);
                     game.isFullScreen = true;
-                    DatabaseUtil.setFullscreenMode(game.username, true);
+                    //DatabaseUtil.setFullscreenMode(game.username, true);
                     game.setScreen(game.settingsScreen);
                 }
                 if (windowModeSelectBox.getSelected().equals("Windowed"))
                 {
                     Constants.soundEffect.play(game.soundEffectVolume);
                     game.isFullScreen = false;
-                    DatabaseUtil.setFullscreenMode(game.username, false);
+                    //DatabaseUtil.setFullscreenMode(game.username, false);
                     game.setScreen(game.settingsScreen);
                 }
 
