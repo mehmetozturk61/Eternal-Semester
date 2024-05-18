@@ -139,18 +139,18 @@ public class DatabaseUtil {
         Document document = findUser(username);
         return (Integer)document.get("Gold");
     } 
-    public static void setFullscreenMode(String username, boolean isFullscreen){
+    /*public static void setFullscreenMode(String username, boolean isFullscreen){
         Document document = findUser(username);
         UpdateResult updateResult = userCollection.updateOne(document, Updates.set("isFullscreen", isFullscreen));
-    }
+    }*/
     public static void setResolution(String username, String resolution){
         Document document = findUser(username);
         UpdateResult updateResult = userCollection.updateOne(document, Updates.set("Resolution", resolution));
     }
-    public static boolean getIsFullscreen(String username){
+    /*public static boolean getIsFullscreen(String username){
         Document document = findUser(username);
         return (Boolean)document.get("IsFullscreen");
-    }
+    }*/
     public static String getResolution(String username){
         Document document = findUser(username);
         return (String)document.get("Resolution");
